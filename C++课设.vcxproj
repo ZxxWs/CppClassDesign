@@ -81,6 +81,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\Detail.cpp" />
+    <ClCompile Include="Source\Student.cpp" />
     <ClCompile Include="Tz.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -91,6 +93,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Tz.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Header\Detail.h" />
+    <ClInclude Include="Header\Student.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
