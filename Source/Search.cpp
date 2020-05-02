@@ -28,6 +28,8 @@ Search::Search(QWidget* parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
+	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
+
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -58,24 +60,36 @@ Search::Search(QWidget* parent)
 					QString Item = QString::fromStdString(NumList[i]);
 					NumComboBox->addItem(Item, Item);
 				}
-				lab->setText(QString::fromStdString(to_string(NumListLen)));
+				//lab->setText(QString::fromStdString(to_string(NumListLen)));
 			}
 		}
 		else
 		{
-			lab->setText("运行失败");
+			//此处做连接失败处理
+			//lab->setText("运行失败");
 		}
-		//QString qstr = QString::fromStdString(InitGrade());
-		//lab->setText(qstr);
 	}
 	else
 	{
 		//此处做连接失败处理
 	}
+
 }
 
 
+void Search::GradeComboBoxChanged()//班号列表发生改变
+{
 
+	QString str = ui.GradeComboBox->currentText();//获取当前列表的值
+
+	InitNum(str.toStdString());//用班号进行新的查询
+	NumComboBox->clear();//先将上次的学号列表清空
+	int NumListLen = NumList->length();
+	for (int i = 0; i < NumListLen; i++) {//填充班级列表
+		QString Item = QString::fromStdString(NumList[i]);
+		NumComboBox->addItem(Item, Item);
+	}
+}
 
 
 

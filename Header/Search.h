@@ -23,6 +23,9 @@ public:
 
 	QLabel* lab = new QLabel;
 
+public slots:
+	void GradeComboBoxChanged();//comobox里面的值发生了改变之后，自动识别
+
 private:
 	Ui::Form ui;
 };
