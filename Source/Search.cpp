@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "../Header/Search.h"
+#include "../Header/Student.h"
 #include <QtWidgets/QMainWindow>
 #include<iostream>
 #include<Windows.h>
@@ -17,11 +18,13 @@ MYSQL_ROW column; //一个行数据的类型安全(type-safe)的表示，表示数据行的列
 char query[150]; //查询语句
 string GradeList[9999];//班级列表
 string NumList[100];//学号列表
+Student stu;//展示的学生
 
 string Tag;
 
 bool InitGrade();
 bool InitNum(string GradeNum);
+bool InitStudent(string GradeNum, string StudentNum);
 bool ConnectDatabase();
 
 Search::Search(QWidget* parent)
@@ -29,7 +32,7 @@ Search::Search(QWidget* parent)
 {
 	ui.setupUi(this);
 	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
-
+	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -53,14 +56,17 @@ Search::Search(QWidget* parent)
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);
 			}
-			if (InitNum(GradeList[0])) {
-
+			if (InitNum(GradeList[0])) {//学号列表初始化验证
 				int NumListLen = NumList->length();
 				for (int i = 0; i < NumListLen; i++) {//填充班级列表
 					QString Item = QString::fromStdString(NumList[i]);
 					NumComboBox->addItem(Item, Item);
 				}
-				//lab->setText(QString::fromStdString(to_string(NumListLen)));
+				
+			}
+			else
+			{
+				//此处做连接失败处理
 			}
 		}
 		else
@@ -76,10 +82,8 @@ Search::Search(QWidget* parent)
 
 }
 
-
 void Search::GradeComboBoxChanged()//班号列表发生改变
 {
-
 	QString str = ui.GradeComboBox->currentText();//获取当前列表的值
 
 	InitNum(str.toStdString());//用班号进行新的查询
@@ -91,7 +95,22 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 	}
 }
 
+void Search::NumComboBoxChanged()//班号列表发生改变
+{
 
+	QString StuNum = ui.NumComboBox->currentText();//获取当前列表的值
+	QString GraNum = ui.GradeComboBox->currentText();
+
+
+
+	//InitNum(str.toStdString());//用班号进行新的查询
+	//NumComboBox->clear();//先将上次的学号列表清空
+	//int NumListLen = NumList->length();
+	//for (int i = 0; i < NumListLen; i++) {//填充班级列表
+	//	QString Item = QString::fromStdString(NumList[i]);
+	//	NumComboBox->addItem(Item, Item);
+	//}
+}
 
 bool ConnectDatabase() {
 	//初始化mysql  
@@ -149,6 +168,28 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
 		NumList[i] = (column[0]);
+	}
+	return true;
+}
+
+bool InitStudent(string GradeNum,string StudentNum) {
+
+	string Query = "select * from grade" + GradeNum + " where Snum=" + StudentNum;
+	sprintf_s(query,&Query[0]); //执行查询语句
+	mysql_query(mysql, "set names gbk"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	//返回0 查询成功，返回1查询失败  
+	if (mysql_query(mysql, query))    //执行SQL语句
+	{
+		return false;
+	}
+	//获取结果集  
+	if (!(res = mysql_store_result(mysql)))   //获得sql语句结束后返回的结果集  
+	{
+		return false;
+	}
+
+	for (int i = 0; column = mysql_fetch_row(res); i++) {
+		
 	}
 	return true;
 }
