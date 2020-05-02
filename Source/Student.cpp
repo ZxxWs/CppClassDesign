@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-Student::Student(int Snum, int Sgrade, string Sname, double Sscore, string Sdetail, string Sremark){
+Student::Student(string Snum, string Sgrade, string Sname, double Sscore, string Sdetail, string Sremark){
 	this->Snum = Snum;
 	this->Sgrade = Sgrade;
 	this->Sname = Sname;
@@ -10,10 +10,10 @@ Student::Student(int Snum, int Sgrade, string Sname, double Sscore, string Sdeta
 	setSdetail(Sdetail);
 	this->Sremark = Sremark;
 }
-void Student::setSnum(int Snum){
+void Student::setSnum(string Snum){
 	this->Snum = Snum;
 }
-void Student::setSgrade(int Sgrade){
+void Student::setSgrade(string Sgrade){
 	this->Sgrade = Sgrade;
 }
 void Student::setSname(string Sname){
@@ -38,10 +38,10 @@ void Student::setSremark(string Sremark){
 	this->Sremark = Sremark;
 }
 
-int Student::getSnum(){
+string Student::getSnum(){
 	return this->Snum;
 }
-int Student::getSgrade(){
+string Student::getSgrade(){
 	return this->Sgrade;
 }
 string Student::getSname(){

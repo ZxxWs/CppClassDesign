@@ -11,7 +11,6 @@ Tz::Tz(QWidget *parent)
 	ui.setupUi(this);
 	Sub = ui.SubButton;//将按钮和UI上的控件绑定
 	Lab = ui.label;
-	Tag = ui.TagShow;
 	connect(ui.SubButton, SIGNAL(clicked()), this, SLOT(ClickButton()));//将按钮和点击事件绑定
 
 

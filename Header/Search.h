@@ -21,6 +21,8 @@ public:
 	QPushButton* AlterButton=new QPushButton;
 	QPushButton* OutButton=new QPushButton;
 
+	QLabel* lab = new QLabel;
+
 private:
-	Ui::Form ui;
+	Ui::SearchClass ui;
 };
