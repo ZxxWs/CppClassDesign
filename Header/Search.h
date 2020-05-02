@@ -10,8 +10,8 @@ class Search : public QMainWindow
 public:
 	Search(QWidget* parent = Q_NULLPTR);
 
-	QComboBox* GradeList = new QComboBox;
-	QComboBox* NumList = new QComboBox;
+	QComboBox* GradeComboBox = new QComboBox;
+	QComboBox* NumComboBox = new QComboBox;
 	QLabel* LabNum = new QLabel;
 	QLabel* LabName = new QLabel;
 	QLabel* LabGrade = new QLabel;
@@ -24,5 +24,5 @@ public:
 	QLabel* lab = new QLabel;
 
 private:
-	Ui::SearchClass ui;
+	Ui::Form ui;
 };

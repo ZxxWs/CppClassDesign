@@ -16,19 +16,23 @@ MYSQL_RES* res; //这个结构代表返回行的一个查询结果集
 MYSQL_ROW column; //一个行数据的类型安全(type-safe)的表示，表示数据行的列  
 char query[150]; //查询语句
 string GradeList[9999];//班级列表
+string NumList[100];//学号列表
+
+string Tag;
 
 bool InitGrade();
+bool InitNum(string GradeNum);
 bool ConnectDatabase();
 
 Search::Search(QWidget* parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-	setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
+	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
-	this->GradeList = ui.GradeList;
-	this->NumList = ui.NumList;
+	this->GradeComboBox = ui.GradeComboBox;
+	this->NumComboBox = ui.NumComboBox;
 	this->LabNum = ui.LabNum;
 	this->LabName = ui.LabName;
 	this->LabGrade = ui.LabGrade;
@@ -40,10 +44,27 @@ Search::Search(QWidget* parent)
  
 	this->lab = ui.lable;
 	if (ConnectDatabase()) {//连接验证
-		if (InitGrade) {//班级列表初始化验证
+		if (InitGrade()) {//班级列表初始化验证
 
+			int GradeListLen = GradeList->length();
+			for (int i = 0; i < GradeListLen; i++) {//填充班级列表
+				QString Item = QString::fromStdString(GradeList[i]);
+				GradeComboBox->addItem(Item, Item);
+			}
+			if (InitNum(GradeList[0])) {
+
+				int NumListLen = NumList->length();
+				for (int i = 0; i < NumListLen; i++) {//填充班级列表
+					QString Item = QString::fromStdString(NumList[i]);
+					NumComboBox->addItem(Item, Item);
+				}
+				lab->setText(QString::fromStdString(to_string(NumListLen)));
+			}
 		}
-
+		else
+		{
+			lab->setText("运行失败");
+		}
 		//QString qstr = QString::fromStdString(InitGrade());
 		//lab->setText(qstr);
 	}
@@ -51,10 +72,11 @@ Search::Search(QWidget* parent)
 	{
 		//此处做连接失败处理
 	}
-
-
-
 }
+
+
+
+
 
 
 bool ConnectDatabase() {
@@ -79,7 +101,6 @@ bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
     //返回0 查询成功，返回1查询失败  
     if (mysql_query(mysql, query))    //执行SQL语句
     {
-        //printf("Query failed (%s)\n", mysql_error(mysql));
         return false;
     }
  
@@ -88,12 +109,32 @@ bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
     {
         return false;
     }
-	int i = 0;
-    while (column = mysql_fetch_row(res))   //在已知字段数量情况下，获取并打印下一行  
-    {
-		GradeList[i]=(column[0]);
-		i++;
-    }
+
+	for (int i = 0; column = mysql_fetch_row(res); i++) {
+		GradeList[i] = (column[0]);
+	}
+
 	return true;
 }
 
+bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
+	
+	sprintf_s(query,"select * from grade"); //执行查询语句
+	strcat(query, &GradeNum[0]);
+	mysql_query(mysql, "set names gbk"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	//返回0 查询成功，返回1查询失败  
+	if (mysql_query(mysql, query))    //执行SQL语句
+	{
+		return false;
+	}
+	//获取结果集  
+	if (!(res = mysql_store_result(mysql)))   //获得sql语句结束后返回的结果集  
+	{
+		return false;
+	}
+
+	for (int i = 0; column = mysql_fetch_row(res); i++) {
+		NumList[i] = (column[0]);
+	}
+	return true;
+}

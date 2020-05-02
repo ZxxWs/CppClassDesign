@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="QComboBox" name="GradeList">
+  <widget class="QComboBox" name="GradeComboBox">
    <property name="geometry">
     <rect>
      <x>120</x>
@@ -23,7 +23,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QComboBox" name="NumList">
+  <widget class="QComboBox" name="NumComboBox">
    <property name="geometry">
     <rect>
      <x>290</x>
