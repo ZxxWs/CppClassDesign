@@ -82,6 +82,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\Detail.cpp" />
+    <ClCompile Include="Source\Search.cpp" />
     <ClCompile Include="Source\Student.cpp" />
     <ClCompile Include="Tz.cpp" />
   </ItemGroup>
@@ -90,12 +91,14 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Tz.ui" />
+    <QtUic Include="UI\Search.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="Tz.qrc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header\Detail.h" />
+    <QtMoc Include="Header\Search.h" />
     <ClInclude Include="Header\Student.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

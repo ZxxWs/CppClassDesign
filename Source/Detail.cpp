@@ -1,4 +1,5 @@
-#include "Detail.h"
+#include "../Header/Detail.h"
+
 
 double TurnScore(string Score) {
 	int front, back;

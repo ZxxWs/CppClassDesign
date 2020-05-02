@@ -1,21 +1,21 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_Tz.h"
+#include "../x64/Debug/uic/ui_Search.h"
 #include "qpushbutton.h"
 
-class Tz : public QMainWindow
+class Search : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	Tz(QWidget *parent = Q_NULLPTR);
+	Search(QWidget* parent = Q_NULLPTR);
 	QPushButton* Sub = new QPushButton;	//输入密码后的确认按钮声明
 
 public slots:
 	void ClickButton();//按钮点击事件
 
 private:
-	Ui::TzClass ui;
+	Ui::Form ui;
 
 };
