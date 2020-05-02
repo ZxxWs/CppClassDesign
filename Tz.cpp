@@ -1,4 +1,5 @@
 #include "Tz.h"
+#include "Header/Search.h"
 #include "qpushbutton.h"
 #include <QtWidgets/QMainWindow>
 
@@ -6,17 +7,20 @@ Tz::Tz(QWidget *parent)
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
-	Sub = ui.SubButton;
-	
+	Sub = ui.SubButton;//将按钮和UI上的控件绑定
+	Lab = ui.label;
+	connect(ui.SubButton, SIGNAL(clicked()), this, SLOT(ClickButton()));//将按钮和点击事件绑定
 }
 
 
 void Tz::ClickButton() {//按钮点击事件的实现
-	//From s=new 
-	//Ui_Form(QWidget * parent = Q_NULLPTR);
-	//Ui_Form s;
-	//s.setupUi(this);
-	
+
+	Sub->setText("asas");
+	Sub->hide();
+	Lab->hide();
+	Search* s;
+	s = new Search(this);
+	s->show();
 
 }
 

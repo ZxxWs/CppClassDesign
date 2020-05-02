@@ -11,6 +11,7 @@ class Tz : public QMainWindow
 public:
 	Tz(QWidget *parent = Q_NULLPTR);
 	QPushButton* Sub = new QPushButton;	//输入密码后的确认按钮声明
+	QLabel* Lab = new QLabel;
 
 public slots:
 	void ClickButton();//按钮点击事件
