@@ -1,5 +1,4 @@
 #pragma once
-
 #include <QtWidgets/QMainWindow>
 #include "../x64/Debug/uic/UI/ui_Search.h"
 

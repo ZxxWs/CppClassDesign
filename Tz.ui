@@ -45,6 +45,19 @@
      <string>确认</string>
     </property>
    </widget>
+   <widget class="QLabel" name="TagShow">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>220</y>
+      <width>651</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>测试信息</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

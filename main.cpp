@@ -22,11 +22,11 @@ bool ConnectDatabase();
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-	/*Tz w;
-	w.show();*/
-	Search s;
-	s.show();
-    ConnectDatabase();
+	Tz w;
+	w.show();
+	/*Search s;
+	s.show();*/
+    //ConnectDatabase();
 	return a.exec();
 }
 

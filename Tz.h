@@ -12,6 +12,7 @@ public:
 	Tz(QWidget *parent = Q_NULLPTR);
 	QPushButton* Sub = new QPushButton;	//输入密码后的确认按钮声明
 	QLabel* Lab = new QLabel;
+	QLabel* Tag = new QLabel;//用于测试的Label
 
 public slots:
 	void ClickButton();//按钮点击事件

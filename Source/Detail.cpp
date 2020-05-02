@@ -15,10 +15,10 @@ Detail::Detail() {
 
 Detail::Detail(string Sdetail) {
 	int i = Sdetail.find("#");
-	this->Event = Sdetail.substr(0,i-1);
+	this->Event = Sdetail.substr(0,i);
 	Sdetail = Sdetail.substr(i+1);
 	i= Sdetail.find("#");
-	this->Time = Sdetail.substr(0, i - 1);
+	this->Time = Sdetail.substr(0, i);
 	Sdetail = Sdetail.substr(i + 1);
 	this->Score = TurnScore(Sdetail);
 }
