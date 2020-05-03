@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #pragma execution_character_set("UTF-8")
+#include "../Header/Detail.h"
 #include "../Header/Search.h"
 #include "../Header/Student.h"
 #include <QtWidgets/QMainWindow>
@@ -7,6 +8,8 @@
 #include<Windows.h>
 #include<WinSock.h>
 #include<mysql.h>
+#include <QHeaderView>
+#include <qstandarditemmodel.h>
 
 using namespace std;
 
@@ -20,6 +23,10 @@ char query[150]; //查询语句
 string GradeList[9999];//班级列表
 string NumList[100];//学号列表
 Student stu;//展示的学生
+
+
+
+QStandardItemModel* dataModel = new QStandardItemModel();	//绑定数据模型
 
 bool InitGrade();
 bool InitNum(string GradeNum);
@@ -45,8 +52,14 @@ Search::Search(QWidget* parent)
 	this->ShowTable=ui.ShowTable;
 	this->AlterButton = ui.AlterButton;
 	this->OutButton = ui.OutButton;
- 
 	this->lab = ui.lable;
+
+	this->ShowTable->setModel(dataModel);	//绑定数据模型
+	this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//设置表格宽度自动化
+	dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置列表头
+	dataModel->setHorizontalHeaderItem(1, new QStandardItem("时间"));
+	dataModel->setHorizontalHeaderItem(2, new QStandardItem("分数"));
+
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
 
@@ -67,6 +80,15 @@ Search::Search(QWidget* parent)
 					LabScore->setText("总分："+QString::fromStdString(to_string(stu.getSscore())));
 					LabRemake->setText("备注："+QString::fromStdString(stu.getSremark()));
 					LabGrade->setText("班级："+QString::fromStdString(stu.getSgrade()));
+
+					//学分细则表格的填充
+					//dataModel->setItem(0, 0, new QStandardItem("data1"));
+					//dataModel->setItem(0, 0, new QStandardItem("data2"));
+					Detail detail[999];
+					detail
+					//int DetailCount = stu.getSdetail();
+
+
 				}
 				else
 				{

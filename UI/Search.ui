@@ -33,19 +33,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="SearchButton">
-   <property name="geometry">
-    <rect>
-     <x>960</x>
-     <y>40</y>
-     <width>93</width>
-     <height>28</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>查找</string>
-   </property>
-  </widget>
   <widget class="QTableView" name="ShowTable">
    <property name="geometry">
     <rect>
