@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Tz.ui" />
+    <QtUic Include="UI\AddInformation.ui" />
     <QtUic Include="UI\Search.ui" />
   </ItemGroup>
   <ItemGroup>

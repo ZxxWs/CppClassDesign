@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-#pragma execution_character_set("UTF-8")
+#pragma execution_character_set("UTF-8")//用于qt的编码，如果没有，界面会有中文乱码
 #include "../Header/Detail.h"
 #include "../Header/Search.h"
 #include "../Header/Student.h"
@@ -24,22 +24,23 @@ char query[150]; //查询语句
 string GradeList[9999];//班级列表
 string NumList[100];//学号列表
 Student stu;//展示的学生
-//Detail* detail;//学生的学分细则解析
 
+QStandardItemModel* dataModel = new QStandardItemModel();	//表格绑定数据模型
 
-QStandardItemModel* dataModel = new QStandardItemModel();	//绑定数据模型
-
+//下面函数的声明
 bool InitGrade();
 bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
 bool ConnectDatabase();
 
-Search::Search(QWidget* parent)
+Search::Search(QWidget* parent)//查询界面的构造函数
 	: QMainWindow(parent)
 {
 	ui.setupUi(this);
 	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
 	connect(ui.NumComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
+	connect(ui.AddButton, SIGNAL(clicked()), this, SLOT(ClickAddButton()));//添加按钮和点击函数的绑定
+	
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -58,7 +59,6 @@ Search::Search(QWidget* parent)
 	this->ShowTable->setModel(dataModel);	//绑定数据模型
 	this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//设置表格宽度自动化
 	
-
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
 
@@ -67,46 +67,10 @@ Search::Search(QWidget* parent)
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);
 			}
-			//if (InitNum(GradeList[0])) {//学号列表初始化验证
-			//	int NumListLen = NumList->length();
-			//	for (int i = 0; i < NumListLen; i++) {//填充班级列表
-			//		QString Item = QString::fromStdString(NumList[i]);
-			//		NumComboBox->addItem(Item, Item);
-			//	}
-			//	
-					/*if (InitStudent(GradeList[0], NumList[0])) {
-					LabNum->setText("学号："+QString::fromStdString(stu.getSnum()));
-					LabName->setText("姓名："+QString::fromStdString(stu.getSname()));
-					LabScore->setText("总分："+QString::fromStdString(to_string(stu.getSscore())));
-					LabRemake->setText("备注："+QString::fromStdString(stu.getSremark()));
-					LabGrade->setText("班级："+QString::fromStdString(stu.getSgrade()));*/
-
-					//学分细则表格的填充
-					/*detail= stu.getSdetail();
-					for (int i = 0; i < 999; i++) {
-						if (detail[i].getEvent() == "") {
-							break;
-						}
-						dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()->getEvent())));
-						dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()->getTime())));
-						dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()->getScore()))));
-					}*/
-					
-				//}
-				//else
-				//{
-				//	//此处做查询失败处理
-				//}
-			//}
-			//else
-			//{
-			//	//此处做连接失败处理
-			//}
 		}
 		else
 		{
 			//此处做连接失败处理
-			//lab->setText("运行失败");
 		}
 	}
 	else
@@ -165,6 +129,10 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 	{
 		//此处做查询失败处理
 	}
+}
+
+void Search::ClickAddButton() {
+
 }
 
 bool ConnectDatabase() {

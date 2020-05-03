@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Search</class>
+ <widget class="QWidget" name="Search">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -228,7 +228,7 @@
    <property name="geometry">
     <rect>
      <x>830</x>
-     <y>600</y>
+     <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
@@ -241,7 +241,7 @@
    <property name="geometry">
     <rect>
      <x>950</x>
-     <y>600</y>
+     <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
@@ -253,14 +253,66 @@
   <widget class="QLabel" name="lable">
    <property name="geometry">
     <rect>
-     <x>520</x>
-     <y>40</y>
-     <width>421</width>
-     <height>31</height>
+     <x>510</x>
+     <y>600</y>
+     <width>411</width>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
     <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="GradeListlabel">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>20</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>选择班号：</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="NumListlabel">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>20</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>选择学号：</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="AddButton">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>50</y>
+     <width>93</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>添加</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="DelButton">
+   <property name="geometry">
+    <rect>
+     <x>710</x>
+     <y>50</y>
+     <width>93</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>删除</string>
    </property>
   </widget>
  </widget>

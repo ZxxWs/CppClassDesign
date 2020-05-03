@@ -18,14 +18,17 @@ public:
 	QLabel* LabScore = new QLabel;
 	QLabel* LabRemake = new QLabel;
 	QTableView* ShowTable=new QTableView;
+	QPushButton* AddButton = new QPushButton;
 	QPushButton* AlterButton=new QPushButton;
 	QPushButton* OutButton=new QPushButton;
 
 	QLabel* lab = new QLabel;
 
 public slots:
-	void GradeComboBoxChanged();//comobox里面的值发生了改变之后，自动识别
-	void NumComboBoxChanged();
+	void GradeComboBoxChanged();//班号列表里面的值发生了改变之后，自动识别
+	void NumComboBoxChanged();//学号号列表…………
+	void ClickAddButton();//添加按钮点击函数的声明
+
 private:
-	Ui::Form ui;
+	Ui::Search ui;
 };
