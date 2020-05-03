@@ -23,7 +23,7 @@ char query[150]; //查询语句
 string GradeList[9999];//班级列表
 string NumList[100];//学号列表
 Student stu;//展示的学生
-
+Detail* detail;//学生的学分细则解析
 
 
 QStandardItemModel* dataModel = new QStandardItemModel();	//绑定数据模型
@@ -68,37 +68,41 @@ Search::Search(QWidget* parent)
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);
 			}
-			if (InitNum(GradeList[0])) {//学号列表初始化验证
-				int NumListLen = NumList->length();
-				for (int i = 0; i < NumListLen; i++) {//填充班级列表
-					QString Item = QString::fromStdString(NumList[i]);
-					NumComboBox->addItem(Item, Item);
-				}
-				if (InitStudent(GradeList[0], NumList[0])) {
+			//if (InitNum(GradeList[0])) {//学号列表初始化验证
+			//	int NumListLen = NumList->length();
+			//	for (int i = 0; i < NumListLen; i++) {//填充班级列表
+			//		QString Item = QString::fromStdString(NumList[i]);
+			//		NumComboBox->addItem(Item, Item);
+			//	}
+			//	
+					/*if (InitStudent(GradeList[0], NumList[0])) {
 					LabNum->setText("学号："+QString::fromStdString(stu.getSnum()));
 					LabName->setText("姓名："+QString::fromStdString(stu.getSname()));
 					LabScore->setText("总分："+QString::fromStdString(to_string(stu.getSscore())));
 					LabRemake->setText("备注："+QString::fromStdString(stu.getSremark()));
-					LabGrade->setText("班级："+QString::fromStdString(stu.getSgrade()));
+					LabGrade->setText("班级："+QString::fromStdString(stu.getSgrade()));*/
 
 					//学分细则表格的填充
-					//dataModel->setItem(0, 0, new QStandardItem("data1"));
-					//dataModel->setItem(0, 0, new QStandardItem("data2"));
-					Detail detail[999];
-					detail
-					//int DetailCount = stu.getSdetail();
-
-
-				}
-				else
-				{
-					//此处做查询失败处理
-				}
-			}
-			else
-			{
-				//此处做连接失败处理
-			}
+					/*detail= stu.getSdetail();
+					for (int i = 0; i < 999; i++) {
+						if (detail[i].getEvent() == "") {
+							break;
+						}
+						dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()->getEvent())));
+						dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()->getTime())));
+						dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()->getScore()))));
+					}*/
+					
+				//}
+				//else
+				//{
+				//	//此处做查询失败处理
+				//}
+			//}
+			//else
+			//{
+			//	//此处做连接失败处理
+			//}
 		}
 		else
 		{
@@ -125,7 +129,7 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 	}
 }
 
-void Search::NumComboBoxChanged()//班号列表发生改变
+void Search::NumComboBoxChanged()//学号号列表发生改变
 {
 
 	QString GraNum = ui.GradeComboBox->currentText();
@@ -137,6 +141,19 @@ void Search::NumComboBoxChanged()//班号列表发生改变
 		LabScore->setText("总分：" + QString::fromStdString(to_string(stu.getSscore())));
 		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
 		LabGrade->setText("班级：" + QString::fromStdString(stu.getSgrade()));
+
+
+		//学分细则表格的填充
+		dataModel->clear();
+		detail = stu.getSdetail();
+		for (int i = 0; i < 999; i++) {
+			if (detail[i].getEvent() == "") {
+				break;
+			}
+			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()->getEvent())));
+			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()->getTime())));
+			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()->getScore()))));
+		}
 
 	}
 	else

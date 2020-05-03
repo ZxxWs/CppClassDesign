@@ -25,6 +25,7 @@ void Student::setSscore(double Sscore){
 	this->Sscore = Sscore;
 }
 void Student::setSdetail(string Sdetail){
+
 	for (int i = 0; Sdetail != ""; i++) {//循环解系学生学分细则
 		int tag = Sdetail.find("%");//查找“%”的位置
 		this->Sdetail[i] = Detail(Sdetail.substr(1, tag - 1));
