@@ -84,6 +84,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Source\AddInformation.cpp" />
     <ClCompile Include="Source\Detail.cpp" />
     <ClCompile Include="Source\Search.cpp" />
     <ClCompile Include="Source\Student.cpp" />
@@ -101,6 +102,7 @@
     <QtRcc Include="Tz.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <QtMoc Include="Header\AddInformation.h" />
     <ClInclude Include="Header\Detail.h" />
     <QtMoc Include="Header\Search.h" />
     <ClInclude Include="Header\Student.h" />

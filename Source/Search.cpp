@@ -3,6 +3,7 @@
 #include "../Header/Detail.h"
 #include "../Header/Search.h"
 #include "../Header/Student.h"
+#include "../Header/AddInformation.h"
 #include <QtWidgets/QMainWindow>
 #include<iostream>
 #include<Windows.h>
@@ -10,7 +11,7 @@
 #include<mysql.h>
 #include <QHeaderView>
 #include <qstandarditemmodel.h>
-#include <new.h>
+
 
 using namespace std;
 
@@ -132,7 +133,8 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 }
 
 void Search::ClickAddButton() {
-
+	AddInformation *a=new AddInformation();
+	a->show();
 }
 
 bool ConnectDatabase() {

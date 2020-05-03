@@ -14,6 +14,9 @@
     <ClCompile Include="Source\Search.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AddInformation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Resource Files">
@@ -42,6 +45,9 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="Header\Search.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="Header\AddInformation.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
