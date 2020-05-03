@@ -22,8 +22,6 @@ public:
 	QPushButton* AlterButton=new QPushButton;
 	QPushButton* OutButton=new QPushButton;
 
-	QLabel* lab = new QLabel;
-
 public slots:
 	void GradeComboBoxChanged();//班号列表里面的值发生了改变之后，自动识别
 	void NumComboBoxChanged();//学号号列表…………

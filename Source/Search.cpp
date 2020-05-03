@@ -55,7 +55,6 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	this->ShowTable=ui.ShowTable;
 	this->AlterButton = ui.AlterButton;
 	this->OutButton = ui.OutButton;
-	this->lab = ui.lable;
 
 	this->ShowTable->setModel(dataModel);	//绑定数据模型
 	this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//设置表格宽度自动化
@@ -110,11 +109,9 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 		//学分细则表格的填充
 		dataModel->clear();//先将表格清空
-		lab->setText(QString::fromStdString(stu.getSnum()));
 		dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置表头
 		dataModel->setHorizontalHeaderItem(1, new QStandardItem("时间"));
 		dataModel->setHorizontalHeaderItem(2, new QStandardItem("分数"));
-		lab->setText(QString::fromStdString(stu.getSnum()));
 		for (int i = 0; i < 999; i++) {//循环填充表格
 			if (stu.getSdetail()[i].getEvent() == "") {//如果遇到空的话就说明到头了（结束）
 				break;
@@ -132,7 +129,12 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 	}
 }
 
-void Search::ClickAddButton() {
+void Search::ClickAddButton() {//点击“添加”按钮后，打开添加信息界面
+
+	ui.OutButton->setFocusPolicy(Qt::NoFocus);//弹出新界面后，退出按钮不接受点击
+	//记得释放
+
+
 	AddInformation *a=new AddInformation();
 	a->show();
 }

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>信息查询</string>
   </property>
   <widget class="QComboBox" name="GradeComboBox">
    <property name="geometry">
@@ -248,19 +248,6 @@
    </property>
    <property name="text">
     <string>退出</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lable">
-   <property name="geometry">
-    <rect>
-     <x>510</x>
-     <y>600</y>
-     <width>411</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
    </property>
   </widget>
   <widget class="QLabel" name="GradeListlabel">
