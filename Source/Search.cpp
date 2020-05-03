@@ -1,4 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
+#pragma execution_character_set("UTF-8")
 #include "../Header/Search.h"
 #include "../Header/Student.h"
 #include <QtWidgets/QMainWindow>
@@ -20,8 +21,6 @@ string GradeList[9999];//班级列表
 string NumList[100];//学号列表
 Student stu;//展示的学生
 
-string Tag;
-
 bool InitGrade();
 bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
@@ -32,7 +31,7 @@ Search::Search(QWidget* parent)
 {
 	ui.setupUi(this);
 	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
-	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
+	connect(ui.NumComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -62,7 +61,17 @@ Search::Search(QWidget* parent)
 					QString Item = QString::fromStdString(NumList[i]);
 					NumComboBox->addItem(Item, Item);
 				}
-				
+				if (InitStudent(GradeList[0], NumList[0])) {
+					LabNum->setText("学号："+QString::fromStdString(stu.getSnum()));
+					LabName->setText("姓名："+QString::fromStdString(stu.getSname()));
+					LabScore->setText("总分："+QString::fromStdString(to_string(stu.getSscore())));
+					LabRemake->setText("备注："+QString::fromStdString(stu.getSremark()));
+					LabGrade->setText("班级："+QString::fromStdString(stu.getSgrade()));
+				}
+				else
+				{
+					//此处做查询失败处理
+				}
 			}
 			else
 			{
@@ -79,7 +88,6 @@ Search::Search(QWidget* parent)
 	{
 		//此处做连接失败处理
 	}
-
 }
 
 void Search::GradeComboBoxChanged()//班号列表发生改变
@@ -98,18 +106,21 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 void Search::NumComboBoxChanged()//班号列表发生改变
 {
 
-	QString StuNum = ui.NumComboBox->currentText();//获取当前列表的值
 	QString GraNum = ui.GradeComboBox->currentText();
+	QString StuNum = ui.NumComboBox->currentText();//获取当前列表的值
 
+	if (InitStudent(GraNum.toStdString(),StuNum.toStdString())) {
+		LabNum->setText("学号：" + QString::fromStdString(stu.getSnum()));
+		LabName->setText("姓名：" + QString::fromStdString(stu.getSname()));
+		LabScore->setText("总分：" + QString::fromStdString(to_string(stu.getSscore())));
+		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
+		LabGrade->setText("班级：" + QString::fromStdString(stu.getSgrade()));
 
-
-	//InitNum(str.toStdString());//用班号进行新的查询
-	//NumComboBox->clear();//先将上次的学号列表清空
-	//int NumListLen = NumList->length();
-	//for (int i = 0; i < NumListLen; i++) {//填充班级列表
-	//	QString Item = QString::fromStdString(NumList[i]);
-	//	NumComboBox->addItem(Item, Item);
-	//}
+	}
+	else
+	{
+		//此处做查询失败处理
+	}
 }
 
 bool ConnectDatabase() {
@@ -130,7 +141,7 @@ bool ConnectDatabase() {
 bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
 
     sprintf_s(query, "select * from gradelist"); //执行查询语句，这里是查询所有
-    mysql_query(mysql, "set names gbk"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+    mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
     //返回0 查询成功，返回1查询失败  
     if (mysql_query(mysql, query))    //执行SQL语句
     {
@@ -154,7 +165,7 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	
 	sprintf_s(query,"select * from grade"); //执行查询语句
 	strcat(query, &GradeNum[0]);
-	mysql_query(mysql, "set names gbk"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
 	//返回0 查询成功，返回1查询失败  
 	if (mysql_query(mysql, query))    //执行SQL语句
 	{
@@ -176,7 +187,7 @@ bool InitStudent(string GradeNum,string StudentNum) {
 
 	string Query = "select * from grade" + GradeNum + " where Snum=" + StudentNum;
 	sprintf_s(query,&Query[0]); //执行查询语句
-	mysql_query(mysql, "set names gbk"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
 	//返回0 查询成功，返回1查询失败  
 	if (mysql_query(mysql, query))    //执行SQL语句
 	{
@@ -189,7 +200,25 @@ bool InitStudent(string GradeNum,string StudentNum) {
 	}
 
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
-		
+		stu.setSnum(column[0]);
+		stu.setSname(column[1]);
+		stu.setSgrade(column[2]);
+		stu.setSscore(atof(column[3]));
+		if (column[4]) {
+			stu.setSdetail(column[4]);
+		}
+		else
+		{
+			stu.setSdetail("");
+		}
+		if (column[5]) {
+			stu.setSremark(column[5]);
+		}
+		else
+		{
+			stu.setSremark("无");
+		}
+		//
 	}
 	return true;
 }

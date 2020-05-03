@@ -16,6 +16,7 @@ private:
 
 public:
 
+	Student();
 	Student(string Snum, string Sgrade,string Sname,double Sscore,string Sdetail, string Sremark);
 	void setSnum(string Snum);
 	void setSgrade(string Sgrade);
@@ -29,6 +30,6 @@ public:
 	string getSname();
 	double getSscore();
 	Detail* getSdetail();
-	string setSremark();
+	string getSremark();
 };
 
