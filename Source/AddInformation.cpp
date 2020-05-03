@@ -1,4 +1,5 @@
 #include "../Header/AddInformation.h"
+#include "../Header/Search.h"
 #include "qpushbutton.h"
 #include <QtWidgets/QMainWindow>
 #include<iostream>
@@ -51,7 +52,6 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 	connect(ui.AddStuButton, SIGNAL(clicked()), this, SLOT(ClickStuButton()));
 	connect(ui.SureButton, SIGNAL(clicked()), this, SLOT(ClickSureButton()));
 
-	//this->SureButton->setFocusPolicy(Qt::NoFocus);//初始化的时候确认添加按钮不能点击
 	//初始化的时候，控件都隐藏
 	this->GradeListLable -> hide();
 	this->NameLable -> hide();
@@ -61,6 +61,7 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 	this->RemarkTextEdit -> hide();
 	this->NumLineEdit -> hide();
 	this->NameLineEdit -> hide();
+	this->SureButton->hide();
 	this->NumLineEdit->setClearButtonEnabled(true);//在输入框中设置一个清空按钮
 	this->NameLineEdit->setClearButtonEnabled(true);
 }
@@ -68,7 +69,7 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 void AddInformation::ClickGradeButton(){//点击添加班级按钮后的事件
 
 	AddTag = 0;
-	this->SureButton->setFocusPolicy(Qt::ClickFocus);//点击添加按钮后，将确认按钮设置为可以点击
+	this->SureButton->show();
 	this->NumLabel->show();
 	this->NumLineEdit->show();
 	this->GradeListLable->hide();
@@ -85,7 +86,7 @@ void AddInformation::ClickGradeButton(){//点击添加班级按钮后的事件
 
 void AddInformation::ClickStuButton() {
 	AddTag = 1;
-	this->SureButton->setFocusPolicy(Qt::ClickFocus);//点击添加按钮后，将确认按钮设置为可以点击
+	this->SureButton->show();
 	this->NumLabel->show();
 	this->NumLineEdit->show();
 	this->GradeListLable->show();
@@ -168,7 +169,7 @@ void AddInformation::ClickSureButton() {
 		}
 	}
 
-	this->SureButton->setFocusPolicy(Qt::NoFocus);	//这个函数好像没被调用
+	this->SureButton->hide();	//这个函数好像没被调用
 }
 
 bool AddConnectDatabase() {

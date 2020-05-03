@@ -26,6 +26,7 @@ public slots:
 	void GradeComboBoxChanged();//班号列表里面的值发生了改变之后，自动识别
 	void NumComboBoxChanged();//学号号列表…………
 	void ClickAddButton();//添加按钮点击函数的声明
+	void ClickOutButton();//添加按钮点击函数的声明
 
 private:
 	Ui::Search ui;

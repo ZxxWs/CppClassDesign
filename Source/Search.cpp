@@ -41,7 +41,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
 	connect(ui.NumComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
 	connect(ui.AddButton, SIGNAL(clicked()), this, SLOT(ClickAddButton()));//添加按钮和点击函数的绑定
-	
+	connect(ui.OutButton, SIGNAL(clicked()), this, SLOT(ClickOutButton()));//添
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -131,13 +131,18 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 void Search::ClickAddButton() {//点击“添加”按钮后，打开添加信息界面
 
-	ui.OutButton->setFocusPolicy(Qt::NoFocus);//弹出新界面后，退出按钮不接受点击
-	//记得释放
-
-
+	this->OutButton->hide();
+	//this->AddButton->hide();
 	AddInformation *a=new AddInformation();
 	a->show();
 }
+
+void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
+
+	//ui.retranslateUi();
+	LabRemake->setText("sdsdsdsd");
+}
+
 
 bool ConnectDatabase() {
 	//初始化mysql  
