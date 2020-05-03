@@ -10,6 +10,7 @@
 #include<mysql.h>
 #include <QHeaderView>
 #include <qstandarditemmodel.h>
+#include <new.h>
 
 using namespace std;
 
@@ -23,7 +24,7 @@ char query[150]; //查询语句
 string GradeList[9999];//班级列表
 string NumList[100];//学号列表
 Student stu;//展示的学生
-Detail* detail;//学生的学分细则解析
+//Detail* detail;//学生的学分细则解析
 
 
 QStandardItemModel* dataModel = new QStandardItemModel();	//绑定数据模型
@@ -56,9 +57,7 @@ Search::Search(QWidget* parent)
 
 	this->ShowTable->setModel(dataModel);	//绑定数据模型
 	this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//设置表格宽度自动化
-	dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置列表头
-	dataModel->setHorizontalHeaderItem(1, new QStandardItem("时间"));
-	dataModel->setHorizontalHeaderItem(2, new QStandardItem("分数"));
+	
 
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
@@ -122,9 +121,9 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 
 	InitNum(str.toStdString());//用班号进行新的查询
 	NumComboBox->clear();//先将上次的学号列表清空
-	int NumListLen = NumList->length();
+	int NumListLen = NumList->length();//获取学号列表的长度
 	for (int i = 0; i < NumListLen; i++) {//填充班级列表
-		QString Item = QString::fromStdString(NumList[i]);
+		QString Item = QString::fromStdString(NumList[i]);//将String类型转换成Qstring类型
 		NumComboBox->addItem(Item, Item);
 	}
 }
@@ -132,11 +131,12 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 void Search::NumComboBoxChanged()//学号号列表发生改变
 {
 
-	QString GraNum = ui.GradeComboBox->currentText();
-	QString StuNum = ui.NumComboBox->currentText();//获取当前列表的值
+	QString GraNum = ui.GradeComboBox->currentText();//获取当前列表的值，下一行同理。
+	QString StuNum = ui.NumComboBox->currentText();
 
 	if (InitStudent(GraNum.toStdString(),StuNum.toStdString())) {
-		LabNum->setText("学号：" + QString::fromStdString(stu.getSnum()));
+
+		LabNum->setText("学号：" + QString::fromStdString(stu.getSnum()));//将信息填充到界面上
 		LabName->setText("姓名：" + QString::fromStdString(stu.getSname()));
 		LabScore->setText("总分：" + QString::fromStdString(to_string(stu.getSscore())));
 		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
@@ -144,17 +144,22 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 
 		//学分细则表格的填充
-		dataModel->clear();
-		detail = stu.getSdetail();
-		for (int i = 0; i < 999; i++) {
-			if (detail[i].getEvent() == "") {
+		dataModel->clear();//先将表格清空
+		lab->setText(QString::fromStdString(stu.getSnum()));
+		dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置表头
+		dataModel->setHorizontalHeaderItem(1, new QStandardItem("时间"));
+		dataModel->setHorizontalHeaderItem(2, new QStandardItem("分数"));
+		lab->setText(QString::fromStdString(stu.getSnum()));
+		for (int i = 0; i < 999; i++) {//循环填充表格
+			if (stu.getSdetail()[i].getEvent() == "") {//如果遇到空的话就说明到头了（结束）
 				break;
 			}
-			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()->getEvent())));
-			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()->getTime())));
-			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()->getScore()))));
+			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getEvent())));
+			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getTime())));
+			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()[i].getScore()))));
 		}
-
+		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的（改了半天）
+		stu=Student();
 	}
 	else
 	{
@@ -237,13 +242,14 @@ bool InitStudent(string GradeNum,string StudentNum) {
 	{
 		return false;
 	}
+	
 
-	for (int i = 0; column = mysql_fetch_row(res); i++) {
+	for (int i = 0; column = mysql_fetch_row(res); i++) {//将查询到的学生信息填充到stu中
 		stu.setSnum(column[0]);
 		stu.setSname(column[1]);
 		stu.setSgrade(column[2]);
 		stu.setSscore(atof(column[3]));
-		if (column[4]) {
+		if (column[4]) {//判断细则是否为空，如果不判断话程序会直接卡死（下同）
 			stu.setSdetail(column[4]);
 		}
 		else
