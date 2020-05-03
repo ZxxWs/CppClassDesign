@@ -28,6 +28,7 @@ public:
 public slots:
 	void ClickGradeButton();//添加按钮点击函数的声明
 	void ClickStuButton();//添加按钮点击函数的声明
+	void ClickSureButton();//确认按钮点击函数的声明
 
 private:
 	Ui::AddInformation ui;
