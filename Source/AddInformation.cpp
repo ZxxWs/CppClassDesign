@@ -21,7 +21,6 @@ int AddTag;//用这个Tag区分是添加班级还是添加学生(0:班级，1：学生）
 string StringTag;//用于记录添加过程的问题
 string AddGradeList[9999];//班级列表
 
-
 bool AddConnectDatabase();
 bool InitGradeList();
 bool InitStuList(string grade,string num);

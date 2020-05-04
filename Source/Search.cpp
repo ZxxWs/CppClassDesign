@@ -175,6 +175,7 @@ bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
         return false;
     }
 
+	GradeList->clear();
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
 		GradeList[i] = (column[0]);
 	}
@@ -197,7 +198,7 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	{
 		return false;
 	}
-
+	NumList->clear();
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
 		NumList[i] = (column[0]);
 	}

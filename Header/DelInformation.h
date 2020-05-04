@@ -27,7 +27,8 @@ public slots:
 	void ClickSureButton();
 	void ClickAgainSureButton();
 	void ClickCancelButton();
-
+	void GradeComboBoxChanged();
+	void StuComboBoxChanged();
 private:
 	Ui::DelInformation ui;
 
