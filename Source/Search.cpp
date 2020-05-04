@@ -14,14 +14,14 @@
 #include <QHeaderView>
 #include <qstandarditemmodel.h>
 
-//…………………………………………198行需要优化………………………………
+//…………………………………………190行需要优化………………………………
 
 using namespace std;
 
 MYSQL* mysql = new MYSQL; //mysql连接  
 MYSQL_RES* res; //这个结构代表返回行的一个查询结果集  
 MYSQL_ROW column; //一个行数据的类型安全(type-safe)的表示，表示数据行的列  
-char query[150]; //查询语句
+char query[5000]; //查询语句
 string GradeList[9999];//班级列表
 int GradeListLen = 0;
 string NumList[100];//学号列表
@@ -37,7 +37,7 @@ bool InitGrade();
 bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
 bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
-string ToSting(double d, int i);
+string ToString(double d, int i);
 
 Search::Search(QWidget* parent)//查询界面的构造函数
 	: QMainWindow(parent)
@@ -113,7 +113,7 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 		LabNum->setText("学号：" + QString::fromStdString(stu.getSnum()));//将信息填充到界面上
 		LabName->setText("姓名：" + QString::fromStdString(stu.getSname()));
-		LabScore->setText("总分：" + QString::fromStdString(ToSting(stu.getSscore(),1)));
+		LabScore->setText("总分：" + QString::fromStdString(ToString(stu.getSscore(),1)));
 		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
 		LabGrade->setText("班级：" + QString::fromStdString(stu.getSgrade()));
 
@@ -129,7 +129,7 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 			}
 			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getEvent())));
 			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getTime())));
-			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(ToSting(stu.getSdetail()[i].getScore(),1))));
+			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(ToString(stu.getSdetail()[i].getScore(),1))));
 			RowCount = i+1;
 		}
 		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的
@@ -182,39 +182,28 @@ void Search::ClickAlterButton(){
 		this->OutButton->setStyleSheet("background: rgb(207, 207, 207)");
 		this->OutButton->setText("退出");
 
-		//用于检测最后一行是否添加
-		if (dataModel->data(dataModel->index(RowCount, 0)).toString().toStdString() != "") {
-			RowCount += 1;//如果新增的一行不为空，则行数加一
-		}
-		else
-		{
-			dataModel->removeRow(RowCount);
-		}
-
 		string AllDetail = "";
 		double AllScore = 0;
 		string event, time, score;
 		//这里需要设置输入检测。主要检测分数。两种方法1.输入限制。2.代码异常检测
-		for (int i = 0; i < RowCount; i++) {
+		for (int i = 0; i <= RowCount; i++) {
 			event=dataModel->data(dataModel->index(i,0)).toString().toStdString();
 			time = dataModel->data(dataModel->index(i, 1)).toString().toStdString();
 			score = dataModel->data(dataModel->index(i, 2)).toString().toStdString();
 			//检测输入内容由没有空的
-			if ((event.length()==0 || time.length() == 0)|| score.length() == 0) {//如果有空是空的
-		
-				NumComboBoxChanged();
-				LabAlter->setText("输入内容不可以为空");
-				return;
-				
+			if ((event=="" || time=="")|| score=="") {//如果有空是空的,直接跳过。
+				continue;
 			}
-			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%";
+			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%%";//这里设置两个%是为了防止转义
 			AllScore += atof(&score[0]);
 		}
 
 		//获取当前班号和学号
-		string gradeNum = LabGrade->selectedText().toStdString();
-		string stuNum = LabNum->selectedText().toStdString();
+		string gradeNum = GradeComboBox->currentText().toStdString();
+		string stuNum = NumComboBox->currentText().toStdString();
 		
+		LabAlter->setText(NumComboBox->currentText());
+
 		//处理数据库，修改学分细则
 		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {
 			LabAlter->setText("学分细则修改成功");
@@ -223,6 +212,7 @@ void Search::ClickAlterButton(){
 		{
 			LabAlter->setText("学分细则修改失败，请检查输入");
 		}
+		
 		NumComboBoxChanged();//刷新学分细则表
 	}
 }
@@ -299,7 +289,7 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	
 	sprintf_s(query,"select * from grade"); //执行查询语句
 	strcat(query, &GradeNum[0]);
-	mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	mysql_query(mysql, "set names utf8"); //设置编码格式（
 	//返回0 查询成功，返回1查询失败  
 	if (mysql_query(mysql, query))    //执行SQL语句
 	{
@@ -323,7 +313,7 @@ bool InitStudent(string GradeNum,string StudentNum) {
 
 	string Query = "select * from grade" + GradeNum + " where Snum=" + StudentNum;
 	sprintf_s(query,&Query[0]); //执行查询语句
-	mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+	mysql_query(mysql, "set names utf8"); //设置编码格式
 	//返回0 查询成功，返回1查询失败  
 	if (mysql_query(mysql, query))    //执行SQL语句
 	{
@@ -360,11 +350,27 @@ bool InitStudent(string GradeNum,string StudentNum) {
 }
 
 //修改学生学分细则
-bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
+bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore) {
 
+	//UPDATE table_name SET field1 = new - value1, field2 = new - value2
+		//[WHERE Clause]
+
+	string str = "update grade"+gradeNum+" set Sscore="+ToString(AllScore,1)+",Sdetail='"+AllDetail+"' where Snum="+stuNum;
+	//string str = "update grade" + gradeNum + " set Sscore=" + ToString(AllScore, 1) + " where Snum=" + stuNum;
+	sprintf_s(query, &str[0]); //查询语句
+	mysql_query(mysql, "set names utf8");
+	if (mysql_query(mysql, query))    //执行SQL语句
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+}
 
 //自定义用于将double转成string，保留i位小数
-string ToSting(double d, int i) {
+string ToString(double d, int i) {
 	string str = to_string(d);
 	int tag = str.find(".");
 	return str.substr(0, tag + 1 + i);
