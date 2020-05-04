@@ -39,7 +39,7 @@
      <x>510</x>
      <y>120</y>
      <width>531</width>
-     <height>451</height>
+     <height>401</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -233,6 +233,11 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
@@ -248,6 +253,11 @@
      <width>93</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(207, 207, 207);</string>
@@ -291,6 +301,11 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
@@ -307,11 +322,39 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
    <property name="text">
     <string>删除</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="LabAlter">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>540</y>
+     <width>361</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>13</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>

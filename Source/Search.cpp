@@ -1,5 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #pragma execution_character_set("UTF-8")//用于qt的编码，如果没有，界面会有中文乱码
+#pragma comment(lib,"libmysql.lib")
+#pragma comment(lib,"wsock32.lib")
 #include "../Header/Detail.h"
 #include "../Header/Search.h"
 #include "../Header/Student.h"
@@ -12,11 +14,9 @@
 #include <QHeaderView>
 #include <qstandarditemmodel.h>
 
+//…………………………………………198行需要优化………………………………
 
 using namespace std;
-
-#pragma comment(lib,"libmysql.lib")
-#pragma comment(lib,"wsock32.lib")
 
 MYSQL* mysql = new MYSQL; //mysql连接  
 MYSQL_RES* res; //这个结构代表返回行的一个查询结果集  
@@ -29,14 +29,14 @@ int NumListLen = 0;
 Student stu;//展示的学生
 int AlterTag=0;//修改按钮的状态。0：不可修改；1：可修改
 int RowCount = 0;//表格的行数
-
 QStandardItemModel* dataModel = new QStandardItemModel();	//表格绑定数据模型
 
 //下面函数的声明
+bool ConnectDatabase();
 bool InitGrade();
 bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
-bool ConnectDatabase();
+bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
 string ToSting(double d, int i);
 
 Search::Search(QWidget* parent)//查询界面的构造函数
@@ -59,6 +59,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	this->LabGrade = ui.LabGrade;
 	this->LabScore = ui.LabScore;
 	this->LabRemake = ui.LabRemark;
+	this->LabAlter = ui.LabAlter;
 	this->ShowTable=ui.ShowTable;
 	this->AddButton = ui.AddButton;
 	this->DelButton = ui.DelButton;
@@ -67,6 +68,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 
 	this->ShowTable->setModel(dataModel);	//绑定数据模型
 	this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//设置表格宽度自动化
+	this->ShowTable->setEditTriggers(QAbstractItemView::NoEditTriggers);//设置表格为不可编辑状态
 	
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
@@ -103,7 +105,7 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 //学号列表事变化件处理
 void Search::NumComboBoxChanged()//学号号列表发生改变
 {
-
+	//LabAlter->setText("");//这个label是修改学生学分细则的 提示label
 	QString GraNum = ui.GradeComboBox->currentText();//获取当前列表的值，下一行同理。
 	QString StuNum = ui.NumComboBox->currentText();
 
@@ -128,7 +130,7 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getEvent())));
 			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getTime())));
 			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(ToSting(stu.getSdetail()[i].getScore(),1))));
-			RowCount = i;
+			RowCount = i+1;
 		}
 		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的
 		stu=Student();
@@ -163,14 +165,15 @@ void Search::ClickAlterButton(){
 		this->OutButton->setStyleSheet("background: green");
 		this->OutButton->setText("取消");
 
-
-		dataModel->setHorizontalHeaderItem(3, new QStandardItem("删除"));//添加第四列的表头
-		dataModel->setItem(RowCount+1, 3, new QStandardItem("DDD"));
-
+		this->ShowTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
+		dataModel->setItem(RowCount, 0, new QStandardItem(QString::fromStdString("")));
+		dataModel->setItem(RowCount, 1, new QStandardItem(QString::fromStdString("")));
+		dataModel->setItem(RowCount, 2, new QStandardItem(QString::fromStdString("")));
 	}
 	else
 	{
 		AlterTag = 0;
+		//将需要显示出来的控件显示出来
 		this->GradeComboBox->show();
 		this->NumComboBox->show();
 		this->AddButton->show();
@@ -178,8 +181,49 @@ void Search::ClickAlterButton(){
 		this->AlterButton->setStyleSheet("background: rgb(207, 207, 207)");
 		this->OutButton->setStyleSheet("background: rgb(207, 207, 207)");
 		this->OutButton->setText("退出");
-		dataModel->removeColumn(3);
-		this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//
+
+		//用于检测最后一行是否添加
+		if (dataModel->data(dataModel->index(RowCount, 0)).toString().toStdString() != "") {
+			RowCount += 1;//如果新增的一行不为空，则行数加一
+		}
+		else
+		{
+			dataModel->removeRow(RowCount);
+		}
+
+		string AllDetail = "";
+		double AllScore = 0;
+		string event, time, score;
+		//这里需要设置输入检测。主要检测分数。两种方法1.输入限制。2.代码异常检测
+		for (int i = 0; i < RowCount; i++) {
+			event=dataModel->data(dataModel->index(i,0)).toString().toStdString();
+			time = dataModel->data(dataModel->index(i, 1)).toString().toStdString();
+			score = dataModel->data(dataModel->index(i, 2)).toString().toStdString();
+			//检测输入内容由没有空的
+			if ((event.length()==0 || time.length() == 0)|| score.length() == 0) {//如果有空是空的
+		
+				NumComboBoxChanged();
+				LabAlter->setText("输入内容不可以为空");
+				return;
+				
+			}
+			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%";
+			AllScore += atof(&score[0]);
+		}
+
+		//获取当前班号和学号
+		string gradeNum = LabGrade->selectedText().toStdString();
+		string stuNum = LabNum->selectedText().toStdString();
+		
+		//处理数据库，修改学分细则
+		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {
+			LabAlter->setText("学分细则修改成功");
+		}
+		else
+		{
+			LabAlter->setText("学分细则修改失败，请检查输入");
+		}
+		NumComboBoxChanged();//刷新学分细则表
 	}
 }
 
@@ -195,10 +239,14 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 		this->AlterButton->setStyleSheet("background: rgb(207, 207, 207)");
 		this->OutButton->setStyleSheet("background: rgb(207, 207, 207)");
 		this->OutButton->setText("退出");
-
+		NumComboBoxChanged();//执行一次学号列表改变函数，重置学分细则
+		this->ShowTable->setEditTriggers(QAbstractItemView::NoEditTriggers);//设置表格为不可编辑状态
 	}
 	else//当学分细则没在修改状态，作为退出按钮使用
 	{
+
+
+
 
 	}
 
@@ -310,6 +358,10 @@ bool InitStudent(string GradeNum,string StudentNum) {
 	}
 	return true;
 }
+
+//修改学生学分细则
+bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
+
 
 //自定义用于将double转成string，保留i位小数
 string ToSting(double d, int i) {

@@ -17,6 +17,7 @@ public:
 	QLabel* LabGrade = new QLabel;
 	QLabel* LabScore = new QLabel;
 	QLabel* LabRemake = new QLabel;
+	QLabel* LabAlter = new QLabel;
 	QTableView* ShowTable=new QTableView;
 	QPushButton* AddButton = new QPushButton;
 	QPushButton* DelButton= new QPushButton;
