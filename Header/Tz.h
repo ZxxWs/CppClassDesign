@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
-#include "ui_Tz.h"
+#include "../x64/Debug/uic/UI/ui_Tz.h"
 #include "qpushbutton.h"
 
 class Tz : public QMainWindow

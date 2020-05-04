@@ -1,9 +1,9 @@
-#include "Tz.h"
-#include "Header/Search.h"
+#include "../Header/Tz.h"
+#include "../Header/Search.h"
 #include "qpushbutton.h"
 #include <QtWidgets/QMainWindow>
 
-#include "Header/Student.h"
+#include "../Header/Student.h"
 
 Tz::Tz(QWidget *parent)
 	: QMainWindow(parent)

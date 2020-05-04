@@ -45,8 +45,6 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 	this->NumLineEdit = ui.NumLineEdit;
 	this->NameLineEdit = ui.NameLineEdit;
 
-	this->label=ui.label;
-
 	//添加按钮和点击函数的绑定
 	connect(ui.AddGradeButton, SIGNAL(clicked()), this, SLOT(ClickGradeButton()));
 	connect(ui.AddStuButton, SIGNAL(clicked()), this, SLOT(ClickStuButton()));
@@ -109,7 +107,6 @@ void AddInformation::ClickStuButton() {
 				QString Item = QString::fromStdString(AddGradeList[i]);//将String类型转换成Qstring类型
 				GradeComboBox->addItem(Item, Item);
 			}
-			label->setText(QString::fromStdString(AddGradeList[0]));
 		}
 	}
 }
