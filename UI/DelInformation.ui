@@ -194,9 +194,9 @@
    <widget class="QLabel" name="TagLabel">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>20</x>
       <y>480</y>
-      <width>261</width>
+      <width>771</width>
       <height>41</height>
      </rect>
     </property>

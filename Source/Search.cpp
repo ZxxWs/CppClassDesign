@@ -23,7 +23,9 @@ MYSQL_RES* res; //这个结构代表返回行的一个查询结果集
 MYSQL_ROW column; //一个行数据的类型安全(type-safe)的表示，表示数据行的列  
 char query[150]; //查询语句
 string GradeList[9999];//班级列表
+int GradeListLen = 0;
 string NumList[100];//学号列表
+int NumListLen = 0;
 Student stu;//展示的学生
 
 QStandardItemModel* dataModel = new QStandardItemModel();	//表格绑定数据模型
@@ -62,8 +64,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
 
-			int GradeListLen = GradeList->length();//获取班级列表长度
-			for (int i = 0; i < GradeListLen; i++) {//填充班级列表
+			for (int i = 0; i <= GradeListLen; i++) {//填充班级列表
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);
 			}
@@ -81,12 +82,11 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 
 void Search::GradeComboBoxChanged()//班号列表发生改变
 {
-	QString str = ui.GradeComboBox->currentText();//获取当前列表的值
+	QString Qstr = ui.GradeComboBox->currentText();//获取当前列表的值
 
-	InitNum(str.toStdString());//用班号进行新的查询
+	InitNum(Qstr.toStdString());//用班号进行新的查询
 	NumComboBox->clear();//先将上次的学号列表清空
-	int NumListLen = NumList->length();//获取学号列表的长度
-	for (int i = 0; i < NumListLen; i++) {//填充班级列表
+	for (int i = 0; i <= NumListLen; i++) {//填充班级列表
 		QString Item = QString::fromStdString(NumList[i]);//将String类型转换成Qstring类型
 		NumComboBox->addItem(Item, Item);
 	}
@@ -106,7 +106,6 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
 		LabGrade->setText("班级：" + QString::fromStdString(stu.getSgrade()));
 
-
 		//学分细则表格的填充
 		dataModel->clear();//先将表格清空
 		dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置表头
@@ -120,7 +119,7 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getTime())));
 			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()[i].getScore()))));
 		}
-		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的（改了半天）
+		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的
 		stu=Student();
 	}
 	else
@@ -131,8 +130,6 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 void Search::ClickAddButton() {//点击“添加”按钮后，打开添加信息界面
 
-	this->OutButton->hide();
-	//this->AddButton->hide();
 	AddInformation *a=new AddInformation();
 	a->show();
 }
@@ -142,7 +139,6 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 	//ui.retranslateUi();
 	LabRemake->setText("sdsdsdsd");
 }
-
 
 bool ConnectDatabase() {
 	//初始化mysql  
@@ -162,8 +158,9 @@ bool ConnectDatabase() {
 bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
 
     sprintf_s(query, "select * from gradelist"); //执行查询语句，这里是查询所有
-    mysql_query(mysql, "set names utf8"); //设置编码格式（SET NAMES GBK也行），否则cmd下中文乱码  
+    mysql_query(mysql, "set names utf8"); //设置编码格式
     //返回0 查询成功，返回1查询失败  
+
     if (mysql_query(mysql, query))    //执行SQL语句
     {
         return false;
@@ -178,8 +175,8 @@ bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
 	GradeList->clear();
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
 		GradeList[i] = (column[0]);
+		GradeListLen = i;
 	}
-
 	return true;
 }
 
@@ -201,6 +198,7 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	NumList->clear();
 	for (int i = 0; column = mysql_fetch_row(res); i++) {
 		NumList[i] = (column[0]);
+		NumListLen = i;
 	}
 	return true;
 }
@@ -241,7 +239,6 @@ bool InitStudent(string GradeNum,string StudentNum) {
 		{
 			stu.setSremark("无");
 		}
-		//
 	}
 	return true;
 }

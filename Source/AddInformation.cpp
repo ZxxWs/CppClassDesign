@@ -117,7 +117,7 @@ void AddInformation::ClickSureButton() {
 		this->NumLineEdit;
 		if (AddConnectDatabase()) {//连接数据库
 			if (InitGradeList()) {
-				for (int i = 0; i < AddGradeList->length(); i++) {//填充班级列表
+				for (int i = 0; i < AddGradeList->length(); i++) {
 					if (GradeNum == AddGradeList[i]) {//如果输入的班号已经存在
 						this->TagLable->setText("此班号已经存在");
 						this->NumLineEdit->setText("");

@@ -1,6 +1,5 @@
 #include "../Header/Detail.h"
 
-
 double TurnScore(string Score) {
 	int front, back;
 	front = (int)Score[0] - '0';
@@ -8,12 +7,14 @@ double TurnScore(string Score) {
 	double re = front + (0.1 * back);
 	return re;
 }
+
 Detail::Detail() {
 	//默认构造函数
 	//如果没有默认构造函数，Studen类在初始化的时候会出错
 }
 
 Detail::Detail(string Sdetail) {
+
 	int i = Sdetail.find("#");
 	this->Event = Sdetail.substr(0,i);
 	Sdetail = Sdetail.substr(i+1);

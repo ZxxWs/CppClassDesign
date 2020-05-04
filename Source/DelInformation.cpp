@@ -12,16 +12,20 @@ using namespace std;
 #pragma comment(lib,"libmysql.lib")
 #pragma comment(lib,"wsock32.lib")
 
+int DelTag = 0;//É¾³ıÀàĞÍ±êÇ©¡£0:É¾³ı°à¼¶£¬1£ºÉ¾³ıÑ§Éú
 
-char DelQuery[150]; //²éÑ¯Óï¾ä
 string DelStuList[100];
-int DelTag=0;//É¾³ıÀàĞÍ±êÇ©¡£0:É¾³ı°à¼¶£¬1£ºÉ¾³ıÑ§Éú
 string DelGradeList[999];
+int DelGradeListLen = 0;
+int DelStuListLen = 0;
+char DelQuery[150]; //²éÑ¯Óï¾ä
+
 MYSQL* DelMysql = new MYSQL; //mysqlÁ¬½Ó  
 MYSQL_RES* DelRes; //Õâ¸ö½á¹¹´ú±í·µ»ØĞĞµÄÒ»¸ö²éÑ¯½á¹û¼¯  
 MYSQL_ROW DelColumn; //Ò»¸öĞĞÊı¾İµÄÀàĞÍ°²È«(type-safe)µÄ±íÊ¾£¬±íÊ¾Êı¾İĞĞµÄÁĞ  
 
 string ttt;
+int iii=-1;
 
 bool  DelConnectDatabase();
 bool InitDelGradeList();
@@ -63,9 +67,10 @@ DelInformation::DelInformation(QWidget* parent)
 
 	if (DelConnectDatabase()) {//Á¬½ÓÊı¾İ¿â£¬²¢ÇÒÌî³ä°àºÅÁĞ±í
 		if (InitDelGradeList()) {//ÔËĞĞ°àºÅÁĞ±í³õÊ¼»¯º¯Êı
-			for (int i = 0; i < DelGradeList->length(); i++) {
-				QString Item = QString::fromStdString(DelGradeList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
-				GradeComboBox->addItem(Item, Item);
+
+			for (int i = 0; i <= DelGradeListLen; i++) {
+				QString Item = QString::fromStdString(DelGradeList[i]);//½«Ã¿¸ö°àºÅ×ª»»QstringÀàĞÍ£¨Ô­À´ÊÇstringÀàĞÍ)
+				GradeComboBox->addItem(Item,Item);
 			}
 		}
 	}
@@ -104,14 +109,14 @@ void DelInformation::ClickStuButton(){//µã»÷¡°É¾³ıÑ§Éú¡±°´Å¥ºóµÄÂß¼­
 	this->TagLabel->setText("");
 	DelTag = 1;//±êÇ©±íÊ¾É¾³ıµÄÊı¾İÀàĞÍ¡£
 
-	//this->StuComboBox->clear();//ÏÈÇå¿Õµ±Ç°µÄÁĞ±íÔÙÌî³ä
-	//string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
-	//if (InitStuList(gradeNum)) {
-	//	for (int i = 0; i < DelStuList->length(); i++) {
-	//		QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
-	//		StuComboBox->addItem(Item, Item);
-	//	}
-	//}
+	this->StuComboBox->clear();//ÏÈÇå¿Õµ±Ç°µÄÁĞ±íÔÙÌî³ä
+	string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
+	if (InitStuList(gradeNum)) {
+		for (int i = 0; i <= DelStuListLen; i++) {
+			QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
+			StuComboBox->addItem(Item, Item);
+		}
+	}
 
 }
 
@@ -125,7 +130,7 @@ void DelInformation::ClickSureButton(){
 void DelInformation::ClickAgainSureButton() {
 	if (DelTag == 0) {//µ±tagÎª0Ê±£¬±íÊ¾É¾³ı°à¼¶
 
-		string grade = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÏÔÊ¾µÄÖµ¡£
+		string grade = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÏÔÊ¾µÄÖµ¡£Qstring×ªstring
 		if (DelGradeFun(grade)) {
 			this->TagLabel->setText("°à¼¶É¾³ı³É¹¦");
 		}
@@ -168,13 +173,15 @@ void DelInformation::GradeComboBoxChanged() {//µ±°àºÅÁĞ±í·¢Éú±ä»¯Ê±£¬Òş²Ø¡°ÔÙ´ÎÈ
 	string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
 	if (InitStuList(gradeNum)) {
 		
-		for (int i = 0; i < DelStuList->length(); i++) {
+		for (int i = 0; i <= DelStuListLen; i++) {
 			/*if (DelStuList[i] == "") {
 				break;
 			}*/
 			QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
 			StuComboBox->addItem(Item, Item);
 		}
+		//this->TagLabel->setText(QString::fromStdString(to_string(iii)));
+
 		this->TagLabel->setText(QString::fromStdString(ttt));
 	}
 }
@@ -199,11 +206,11 @@ bool DelConnectDatabase() {
 	{
 		return true;
 	}
-	return true;
 }
 
 //²éÑ¯ËùÓĞ°à¼¶ºÅ
 bool InitDelGradeList() {
+
 	sprintf_s(DelQuery, "select grade from gradelist"); //²éÑ¯Óï¾ä
 	mysql_query(DelMysql, "set names utf8"); 
 	if (mysql_query(DelMysql, DelQuery))    //Ö´ĞĞSQLÓï¾ä
@@ -218,6 +225,7 @@ bool InitDelGradeList() {
 	DelGradeList->clear();
 	for (int i = 0; DelColumn = mysql_fetch_row(DelRes); i++) {
 		DelGradeList[i] = (DelColumn[0]);
+		DelGradeListLen = i;
 	}
 	return true;
 }
@@ -236,11 +244,10 @@ bool InitStuList(string gradeNum) {
 	{
 		return false;
 	}
-
 	DelStuList->clear();//Ìî³äÇ°ÏÈÇå¿ÕÊı×é
 	for (int i = 0; DelColumn = mysql_fetch_row(DelRes); i++) {
 		DelStuList[i] = DelColumn[0];
-		ttt = DelStuList[i];
+		DelStuListLen = i;
 	}
 	return true;
 }
@@ -250,5 +257,16 @@ bool DelGradeFun(string grade) {//É¾³ı°à¼¶º¯Êı
 }
 
 bool DelStuFun(string grade,string stu) {
-	return true;
+
+	string str = "delete from grade"+grade+" where Snum='"+stu+"';";
+	sprintf_s(DelQuery,&str[0]); //²éÑ¯Óï¾ä
+	mysql_query(DelMysql, "set names utf8");
+	if (mysql_query(DelMysql, DelQuery))    //Ö´ĞĞSQLÓï¾ä
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }

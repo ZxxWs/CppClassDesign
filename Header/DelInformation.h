@@ -8,13 +8,13 @@ class DelInformation : public QMainWindow
 	Q_OBJECT
 
 public:
-	DelInformation(QWidget* parent = Q_NULLPTR);
+	DelInformation(QWidget* parent = Q_NULLPTR);//自动生成的
 	QPushButton* DelGradeButton;
 	QPushButton* DelStuButton;
 	QPushButton* SureButton;
 	QPushButton* AgainSureButton;
 	QPushButton* CancelButton;
-	QComboBox* GradeComboBox;
+	QComboBox* GradeComboBox;//下拉菜单
 	QComboBox* StuComboBox;
 	QLabel* SureLabel;
 	QLabel* StuLabel;
