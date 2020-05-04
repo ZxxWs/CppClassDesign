@@ -20,6 +20,7 @@ char AddQuery[150]; //查询语句
 int AddTag;//用这个Tag区分是添加班级还是添加学生(0:班级，1：学生）
 string StringTag;//用于记录添加过程的问题
 string AddGradeList[9999];//班级列表
+int AddGradeListLen = 0;
 
 bool AddConnectDatabase();
 bool InitGradeList();
@@ -61,6 +62,8 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 	this->SureButton->hide();
 	this->NumLineEdit->setClearButtonEnabled(true);//在输入框中设置一个清空按钮
 	this->NameLineEdit->setClearButtonEnabled(true);
+	this->AddGradeButton->setStyleSheet("background:green");
+	this->AddStuButton->setStyleSheet("background:rgb(207, 207, 207)");
 }
 
 void AddInformation::ClickGradeButton(){//点击添加班级按钮后的事件
@@ -79,6 +82,8 @@ void AddInformation::ClickGradeButton(){//点击添加班级按钮后的事件
 	this->NumLineEdit->setText("");
 	this->TagLable->setText("");
 	this->NumLineEdit->setMaxLength(9);//设置班号输入的最大长度
+	this->AddGradeButton->setStyleSheet("background:green");
+	this->AddStuButton->setStyleSheet("background: rgb(207, 207, 207)");
 }
 
 void AddInformation::ClickStuButton() {
@@ -102,12 +107,14 @@ void AddInformation::ClickStuButton() {
 	if (AddConnectDatabase()) {//连接数据库
 		if (InitGradeList()) {
 			GradeComboBox->clear();//先将列表清空
-			for (int i = 0; i < AddGradeList->length(); i++) {//填充班级列表
+			for (int i = 0; i <= AddGradeListLen; i++) {//填充班级列表
 				QString Item = QString::fromStdString(AddGradeList[i]);//将String类型转换成Qstring类型
 				GradeComboBox->addItem(Item, Item);
 			}
 		}
 	}
+	this->AddStuButton->setStyleSheet("background:green");
+	this->AddGradeButton->setStyleSheet("background: rgb(207, 207, 207)");
 }
 
 void AddInformation::ClickSureButton() {
@@ -117,7 +124,7 @@ void AddInformation::ClickSureButton() {
 		this->NumLineEdit;
 		if (AddConnectDatabase()) {//连接数据库
 			if (InitGradeList()) {
-				for (int i = 0; i < AddGradeList->length(); i++) {
+				for (int i = 0; i <= AddGradeListLen; i++) {
 					if (GradeNum == AddGradeList[i]) {//如果输入的班号已经存在
 						this->TagLable->setText("此班号已经存在");
 						this->NumLineEdit->setText("");
@@ -201,6 +208,7 @@ bool InitGradeList() {
 
 	for (int i = 0; AddColumn = mysql_fetch_row(AddRes); i++) {
 		AddGradeList[i] = (AddColumn[0]);
+		AddGradeListLen = i;
 	}
 	return true;
 }

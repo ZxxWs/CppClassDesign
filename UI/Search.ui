@@ -227,11 +227,14 @@
   <widget class="QPushButton" name="AlterButton">
    <property name="geometry">
     <rect>
-     <x>830</x>
+     <x>810</x>
      <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
    <property name="text">
     <string>修改</string>
@@ -245,6 +248,9 @@
      <width>93</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
    <property name="text">
     <string>退出</string>
@@ -279,11 +285,14 @@
   <widget class="QPushButton" name="AddButton">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>510</x>
      <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
    <property name="text">
     <string>添加</string>
@@ -292,11 +301,14 @@
   <widget class="QPushButton" name="DelButton">
    <property name="geometry">
     <rect>
-     <x>710</x>
+     <x>660</x>
      <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(207, 207, 207);</string>
    </property>
    <property name="text">
     <string>删除</string>

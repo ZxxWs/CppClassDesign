@@ -27,6 +27,8 @@ int GradeListLen = 0;
 string NumList[100];//学号列表
 int NumListLen = 0;
 Student stu;//展示的学生
+int AlterTag=0;//修改按钮的状态。0：不可修改；1：可修改
+int RowCount = 0;//表格的行数
 
 QStandardItemModel* dataModel = new QStandardItemModel();	//表格绑定数据模型
 
@@ -35,6 +37,7 @@ bool InitGrade();
 bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
 bool ConnectDatabase();
+string ToSting(double d, int i);
 
 Search::Search(QWidget* parent)//查询界面的构造函数
 	: QMainWindow(parent)
@@ -43,7 +46,9 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	connect(ui.GradeComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(GradeComboBoxChanged()));//绑定控件和数据变化函数
 	connect(ui.NumComboBox, SIGNAL(currentIndexChanged(QString)), this, SLOT(NumComboBoxChanged()));
 	connect(ui.AddButton, SIGNAL(clicked()), this, SLOT(ClickAddButton()));//添加按钮和点击函数的绑定
-	connect(ui.OutButton, SIGNAL(clicked()), this, SLOT(ClickOutButton()));//添
+	connect(ui.DelButton, SIGNAL(clicked()), this, SLOT(ClickDelButton()));
+	connect(ui.AlterButton, SIGNAL(clicked()), this, SLOT(ClickAlterButton()));
+	connect(ui.OutButton, SIGNAL(clicked()), this, SLOT(ClickOutButton()));
 	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
@@ -55,6 +60,8 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	this->LabScore = ui.LabScore;
 	this->LabRemake = ui.LabRemark;
 	this->ShowTable=ui.ShowTable;
+	this->AddButton = ui.AddButton;
+	this->DelButton = ui.DelButton;
 	this->AlterButton = ui.AlterButton;
 	this->OutButton = ui.OutButton;
 
@@ -80,6 +87,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	}
 }
 
+//班号列表变化事件处理
 void Search::GradeComboBoxChanged()//班号列表发生改变
 {
 	QString Qstr = ui.GradeComboBox->currentText();//获取当前列表的值
@@ -92,6 +100,7 @@ void Search::GradeComboBoxChanged()//班号列表发生改变
 	}
 }
 
+//学号列表事变化件处理
 void Search::NumComboBoxChanged()//学号号列表发生改变
 {
 
@@ -102,12 +111,13 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 
 		LabNum->setText("学号：" + QString::fromStdString(stu.getSnum()));//将信息填充到界面上
 		LabName->setText("姓名：" + QString::fromStdString(stu.getSname()));
-		LabScore->setText("总分：" + QString::fromStdString(to_string(stu.getSscore())));
+		LabScore->setText("总分：" + QString::fromStdString(ToSting(stu.getSscore(),1)));
 		LabRemake->setText("备注：" + QString::fromStdString(stu.getSremark()));
 		LabGrade->setText("班级：" + QString::fromStdString(stu.getSgrade()));
 
 		//学分细则表格的填充
 		dataModel->clear();//先将表格清空
+		RowCount = 0;
 		dataModel->setHorizontalHeaderItem(0, new QStandardItem("项目"));//设置表头
 		dataModel->setHorizontalHeaderItem(1, new QStandardItem("时间"));
 		dataModel->setHorizontalHeaderItem(2, new QStandardItem("分数"));
@@ -117,7 +127,8 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 			}
 			dataModel->setItem(i, 0, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getEvent())));
 			dataModel->setItem(i, 1, new QStandardItem(QString::fromStdString(stu.getSdetail()[i].getTime())));
-			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(to_string(stu.getSdetail()[i].getScore()))));
+			dataModel->setItem(i, 2, new QStandardItem(QString::fromStdString(ToSting(stu.getSdetail()[i].getScore(),1))));
+			RowCount = i;
 		}
 		stu. ~Student();//释放内存，如果不释放会到时表格的内容继承上次的
 		stu=Student();
@@ -128,18 +139,72 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 	}
 }
 
+//添加按钮事件处理
 void Search::ClickAddButton() {//点击“添加”按钮后，打开添加信息界面
 
 	AddInformation *a=new AddInformation();
 	a->show();
 }
 
-void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
+//删除按钮事件处理
+void Search::ClickDelButton(){}
 
-	//ui.retranslateUi();
-	LabRemake->setText("sdsdsdsd");
+//修改按钮事件处理
+void Search::ClickAlterButton(){
+	
+	if (AlterTag == 0) {//在不可修改状态下点击
+		AlterTag = 1;
+		//先把其他操作控件隐藏
+		this->GradeComboBox->hide();
+		this->NumComboBox->hide();
+		this->AddButton->hide();
+		this->DelButton->hide();
+		this->AlterButton->setStyleSheet("background: red");
+		this->OutButton->setStyleSheet("background: green");
+		this->OutButton->setText("取消");
+
+
+		dataModel->setHorizontalHeaderItem(3, new QStandardItem("删除"));//添加第四列的表头
+		dataModel->setItem(RowCount+1, 3, new QStandardItem("DDD"));
+
+	}
+	else
+	{
+		AlterTag = 0;
+		this->GradeComboBox->show();
+		this->NumComboBox->show();
+		this->AddButton->show();
+		this->DelButton->show();
+		this->AlterButton->setStyleSheet("background: rgb(207, 207, 207)");
+		this->OutButton->setStyleSheet("background: rgb(207, 207, 207)");
+		this->OutButton->setText("退出");
+		dataModel->removeColumn(3);
+		this->ShowTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);//
+	}
 }
 
+//退出按钮事件处理
+void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
+
+	if (AlterTag == 1) {//当学分细则正在修改的时候（作为取消按钮使用）
+		AlterTag = 0;
+		this->GradeComboBox->show();
+		this->NumComboBox->show();
+		this->AddButton->show();
+		this->DelButton->show();
+		this->AlterButton->setStyleSheet("background: rgb(207, 207, 207)");
+		this->OutButton->setStyleSheet("background: rgb(207, 207, 207)");
+		this->OutButton->setText("退出");
+
+	}
+	else//当学分细则没在修改状态，作为退出按钮使用
+	{
+
+	}
+
+}
+
+//连接数据库函数
 bool ConnectDatabase() {
 	//初始化mysql  
 	mysql_init(mysql);
@@ -155,6 +220,7 @@ bool ConnectDatabase() {
 	return true;
 }
 
+//班号查询函数
 bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
 
     sprintf_s(query, "select * from gradelist"); //执行查询语句，这里是查询所有
@@ -180,6 +246,7 @@ bool InitGrade() {//初始化Grade列表，返回值是班号列表（int类型）
 	return true;
 }
 
+//学号查询函数
 bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	
 	sprintf_s(query,"select * from grade"); //执行查询语句
@@ -203,6 +270,7 @@ bool InitNum(string GradeNum) {//初始化Grade列表，返回值是班号列表（int类型）
 	return true;
 }
 
+//学生查询函数
 bool InitStudent(string GradeNum,string StudentNum) {
 
 	string Query = "select * from grade" + GradeNum + " where Snum=" + StudentNum;
@@ -242,3 +310,11 @@ bool InitStudent(string GradeNum,string StudentNum) {
 	}
 	return true;
 }
+
+//自定义用于将double转成string，保留i位小数
+string ToSting(double d, int i) {
+	string str = to_string(d);
+	int tag = str.find(".");
+	return str.substr(0, tag + 1 + i);
+}
+

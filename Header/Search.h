@@ -19,6 +19,7 @@ public:
 	QLabel* LabRemake = new QLabel;
 	QTableView* ShowTable=new QTableView;
 	QPushButton* AddButton = new QPushButton;
+	QPushButton* DelButton= new QPushButton;
 	QPushButton* AlterButton=new QPushButton;
 	QPushButton* OutButton=new QPushButton;
 
@@ -26,6 +27,8 @@ public slots:
 	void GradeComboBoxChanged();//班号列表里面的值发生了改变之后，自动识别
 	void NumComboBoxChanged();//学号号列表…………
 	void ClickAddButton();//添加按钮点击函数的声明
+	void ClickDelButton();//添加按钮点击函数的声明
+	void ClickAlterButton();//添加按钮点击函数的声明
 	void ClickOutButton();//添加按钮点击函数的声明
 
 private:

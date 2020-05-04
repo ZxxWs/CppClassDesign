@@ -63,7 +63,7 @@ DelInformation::DelInformation(QWidget* parent)
 	this->CancelButton->hide();
 	this->SureLabel->hide();
 	this->DelGradeButton->setStyleSheet("background:green");//ÉèÖÃ°´Å¥µÄ±³¾°ÑÕÉ«ÎªÂÌÉ«
-	this->DelStuButton->setStyleSheet("background:white");//ÉèÖÃ°´Å¥µÄ±³¾°ÑÕÉ«Îª°×É«
+	this->DelStuButton->setStyleSheet("background: rgb(207, 207, 207)");//ÉèÖÃ°´Å¥µÄ±³¾°ÑÕÉ«Îª°×É«
 
 	if (DelConnectDatabase()) {//Á¬½ÓÊý¾Ý¿â£¬²¢ÇÒÌî³ä°àºÅÁÐ±í
 		if (InitDelGradeList()) {//ÔËÐÐ°àºÅÁÐ±í³õÊ¼»¯º¯Êý
@@ -79,7 +79,7 @@ DelInformation::DelInformation(QWidget* parent)
 void DelInformation::ClickGradeButton() {//µã»÷¡°É¾³ý°à¼¶¡±°´Å¥ºóµÄÂß¼­
 
 	this->DelGradeButton->setStyleSheet("background:green");
-	this->DelStuButton->setStyleSheet("background:white");
+	this->DelStuButton->setStyleSheet("background: rgb(207, 207, 207)");
 	this->StuLabel->hide();
 	this->StuComboBox->hide();
 	this->AgainSureButton->hide();
@@ -98,7 +98,7 @@ void DelInformation::ClickGradeButton() {//µã»÷¡°É¾³ý°à¼¶¡±°´Å¥ºóµÄÂß¼­
 }
 
 void DelInformation::ClickStuButton(){//µã»÷¡°É¾³ýÑ§Éú¡±°´Å¥ºóµÄÂß¼­
-	this->DelGradeButton->setStyleSheet("background:white");//ÉèÖÃ°´Å¥µÄ±³¾°ÑÕÉ«
+	this->DelGradeButton->setStyleSheet("background: rgb(207, 207, 207)");//ÉèÖÃ°´Å¥µÄ±³¾°ÑÕÉ«
 	this->DelStuButton->setStyleSheet("background:green");
 	this->StuLabel->show();
 	this->StuComboBox->show();
@@ -180,15 +180,10 @@ void DelInformation::GradeComboBoxChanged() {//µ±°àºÅÁÐ±í·¢Éú±ä»¯Ê±£¬Òþ²Ø¡°ÔÙ´ÎÈ
 	if (InitStuList(gradeNum)) {
 		
 		for (int i = 0; i <= DelStuListLen; i++) {
-			/*if (DelStuList[i] == "") {
-				break;
-			}*/
 			QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàÐÍ£¨Ô­À´ÊÇQstringÀàÐÍ)
 			StuComboBox->addItem(Item, Item);
 		}
-		//this->TagLabel->setText(QString::fromStdString(to_string(iii)));
 
-		this->TagLabel->setText(QString::fromStdString(ttt));
 	}
 }
 
