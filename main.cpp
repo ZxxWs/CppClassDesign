@@ -14,13 +14,13 @@ int main(int argc, char *argv[])
 	//Tz w;
 	//w.show();
 
-	Search s;
-	s.show();
+	//Search s;
+	//s.show();
 
 	//AddInformation add;
 	//add.show();
 
-	//DelInformation dd;
-	//dd.show();
+	DelInformation dd;
+	dd.show();
 	return a.exec();
 }

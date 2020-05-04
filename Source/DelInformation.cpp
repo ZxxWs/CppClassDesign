@@ -90,7 +90,7 @@ void DelInformation::ClickGradeButton() {//点击“删除班级”按钮后的逻辑
 	
 	GradeComboBox->clear();
 	if (InitDelGradeList()) {
-		for (int i = 0; i < DelGradeList->length(); i++) {
+		for (int i = 0; i <= DelGradeListLen; i++) {
 			QString Item = QString::fromStdString(DelGradeList[i]);
 			GradeComboBox->addItem(Item, Item);
 		}
@@ -151,6 +151,12 @@ void DelInformation::ClickAgainSureButton() {
 			this->TagLabel->setText("学生删除失败");
 		}
 	}
+
+	this->SureLabel->hide();
+	this->CancelButton->hide();
+	this->AgainSureButton->hide();
+
+
 }
 
 //点击取消删除按钮事务
@@ -253,7 +259,27 @@ bool InitStuList(string gradeNum) {
 }
 
 bool DelGradeFun(string grade) {//删除班级函数
-	return true;
+
+	string str = "delete from gradelist where grade='" + grade + "';";
+	sprintf_s(DelQuery, &str[0]); //查询语句
+	mysql_query(DelMysql, "set names utf8");
+	if (mysql_query(DelMysql, DelQuery))    //执行SQL语句
+	{
+		return false;
+	}
+	else
+	{
+		str = "drop table grade" + grade;
+		sprintf_s(DelQuery, &str[0]); //查询语句
+		if (mysql_query(DelMysql, DelQuery))    //执行SQL语句
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
 }
 
 bool DelStuFun(string grade,string stu) {

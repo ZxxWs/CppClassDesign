@@ -194,9 +194,9 @@
    <widget class="QLabel" name="TagLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>160</x>
       <y>480</y>
-      <width>771</width>
+      <width>501</width>
       <height>41</height>
      </rect>
     </property>
@@ -209,7 +209,7 @@
      <string/>
     </property>
     <property name="alignment">
-     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
