@@ -62,7 +62,7 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
 
-			int GradeListLen = GradeList->length();
+			int GradeListLen = GradeList->length();//获取班级列表长度
 			for (int i = 0; i < GradeListLen; i++) {//填充班级列表
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);

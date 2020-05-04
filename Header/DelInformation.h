@@ -18,10 +18,15 @@ public:
 	QComboBox* StuComboBox;
 	QLabel* SureLabel;
 	QLabel* StuLabel;
-	//QLabel* Lab = new QLabel;
+	QLabel* TagLabel;
+
 
 public slots:
-	void ClickButton();//按钮点击事件
+	void ClickGradeButton();//按钮点击事件
+	void ClickStuButton();
+	void ClickSureButton();
+	void ClickAgainSureButton();
+	void ClickCancelButton();
 
 private:
 	Ui::DelInformation ui;
