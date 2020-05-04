@@ -12,14 +12,16 @@ using namespace std;
 #pragma comment(lib,"libmysql.lib")
 #pragma comment(lib,"wsock32.lib")
 
+
+char DelQuery[150]; //²éÑ¯Óï¾ä
+string DelStuList[100];
+int DelTag=0;//É¾³ıÀàĞÍ±êÇ©¡£0:É¾³ı°à¼¶£¬1£ºÉ¾³ıÑ§Éú
+string DelGradeList[999];
 MYSQL* DelMysql = new MYSQL; //mysqlÁ¬½Ó  
 MYSQL_RES* DelRes; //Õâ¸ö½á¹¹´ú±í·µ»ØĞĞµÄÒ»¸ö²éÑ¯½á¹û¼¯  
 MYSQL_ROW DelColumn; //Ò»¸öĞĞÊı¾İµÄÀàĞÍ°²È«(type-safe)µÄ±íÊ¾£¬±íÊ¾Êı¾İĞĞµÄÁĞ  
-char DelQuery[150]; //²éÑ¯Óï¾ä
-string DelGradeList[999];
-string DelStuList[999];
-int DelTag=0;//É¾³ıÀàĞÍ±êÇ©¡£0:É¾³ı°à¼¶£¬1£ºÉ¾³ıÑ§Éú
-int SureTag = 0;//È·ÈÏ±êÇ©£¬µã»÷Ò»´ÎÈ·ÈÏ°´Å¥ºó¼ÓÒ»´Î£¬¼Óµ½2Ê±²ÅÖ´ĞĞÉ¾³ıĞĞÎª~~~~~ÔİÊ±Ã»ÓÃµ½
+
+string ttt;
 
 bool  DelConnectDatabase();
 bool InitDelGradeList();
@@ -102,14 +104,14 @@ void DelInformation::ClickStuButton(){//µã»÷¡°É¾³ıÑ§Éú¡±°´Å¥ºóµÄÂß¼­
 	this->TagLabel->setText("");
 	DelTag = 1;//±êÇ©±íÊ¾É¾³ıµÄÊı¾İÀàĞÍ¡£
 
-	this->StuComboBox->clear();//ÏÈÇå¿Õµ±Ç°µÄÁĞ±íÔÙÌî³ä
-	string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
-	if (InitStuList(gradeNum)) {
-		for (int i = 0; i < DelStuList->length(); i++) {
-			QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
-			StuComboBox->addItem(Item, Item);
-		}
-	}
+	//this->StuComboBox->clear();//ÏÈÇå¿Õµ±Ç°µÄÁĞ±íÔÙÌî³ä
+	//string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
+	//if (InitStuList(gradeNum)) {
+	//	for (int i = 0; i < DelStuList->length(); i++) {
+	//		QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
+	//		StuComboBox->addItem(Item, Item);
+	//	}
+	//}
 
 }
 
@@ -165,10 +167,15 @@ void DelInformation::GradeComboBoxChanged() {//µ±°àºÅÁĞ±í·¢Éú±ä»¯Ê±£¬Òş²Ø¡°ÔÙ´ÎÈ
 	this->StuComboBox->clear();//ÏÈÇå¿Õµ±Ç°µÄÁĞ±íÔÙÌî³ä
 	string gradeNum = this->GradeComboBox->currentText().toStdString();//»ñÈ¡µ±Ç°°àºÅÁĞ±íÖĞµÄÖµ
 	if (InitStuList(gradeNum)) {
+		
 		for (int i = 0; i < DelStuList->length(); i++) {
+			/*if (DelStuList[i] == "") {
+				break;
+			}*/
 			QString Item = QString::fromStdString(DelStuList[i]);//½«Ã¿¸ö°àºÅ×ª»»stringÀàĞÍ£¨Ô­À´ÊÇQstringÀàĞÍ)
 			StuComboBox->addItem(Item, Item);
 		}
+		this->TagLabel->setText(QString::fromStdString(ttt));
 	}
 }
 
@@ -177,7 +184,7 @@ void DelInformation::StuComboBoxChanged() {
 	this->SureButton->show();
 	this->SureLabel->hide();
 	this->CancelButton->hide();
-	this->TagLabel->setText("");
+	//this->TagLabel->setText("");
 }
 
 bool DelConnectDatabase() {
@@ -217,8 +224,6 @@ bool InitDelGradeList() {
 
 bool InitStuList(string gradeNum) {
 
-	
-	DelRes = NULL;
 	string s = "select Snum from grade"+gradeNum;
 	sprintf_s(DelQuery,&s[0]); //²éÑ¯Óï¾ä
 	mysql_query(DelMysql, "set names utf8");
@@ -233,9 +238,9 @@ bool InitStuList(string gradeNum) {
 	}
 
 	DelStuList->clear();//Ìî³äÇ°ÏÈÇå¿ÕÊı×é
-	
 	for (int i = 0; DelColumn = mysql_fetch_row(DelRes); i++) {
-		DelStuList[i] = (DelColumn[0]);
+		DelStuList[i] = DelColumn[0];
+		ttt = DelStuList[i];
 	}
 	return true;
 }
