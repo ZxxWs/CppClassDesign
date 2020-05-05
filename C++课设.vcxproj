@@ -85,6 +85,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\AddInformation.cpp" />
+    <ClCompile Include="Source\AlterDetailUI.cpp" />
     <ClCompile Include="Source\DelInformation.cpp" />
     <ClCompile Include="Source\Detail.cpp" />
     <ClCompile Include="Source\Search.cpp" />
@@ -93,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="UI\AddInformation.ui" />
+    <QtUic Include="UI\AlterDetailUi.ui" />
     <QtUic Include="UI\DelInformation.ui" />
     <QtUic Include="UI\Search.ui" />
     <QtUic Include="UI\Tz.ui" />
@@ -104,6 +106,7 @@
     <QtMoc Include="Header\Tz.h" />
     <QtMoc Include="Header\AddInformation.h" />
     <QtMoc Include="Header\DelInformation.h" />
+    <QtMoc Include="Header\AlterDetailUI.h" />
     <ClInclude Include="Header\Detail.h" />
     <QtMoc Include="Header\Search.h" />
     <ClInclude Include="Header\Student.h" />

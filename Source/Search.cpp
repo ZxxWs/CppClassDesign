@@ -7,6 +7,7 @@
 #include "../Header/Student.h"
 #include "../Header/AddInformation.h"
 #include "../Header/DelInformation.h"
+#include "../Header/AlterDetailUI.h"
 #include <QtWidgets/QMainWindow>
 #include<iostream>
 #include<Windows.h>
@@ -60,7 +61,6 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	this->LabGrade = ui.LabGrade;
 	this->LabScore = ui.LabScore;
 	this->LabRemake = ui.LabRemark;
-	this->LabAlter = ui.LabAlter;
 	this->ShowTable=ui.ShowTable;
 	this->AddButton = ui.AddButton;
 	this->DelButton = ui.DelButton;
@@ -73,7 +73,6 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	
 	if (ConnectDatabase()) {//连接验证
 		if (InitGrade()) {//班级列表初始化验证
-
 			for (int i = 0; i <= GradeListLen; i++) {//填充班级列表
 				QString Item = QString::fromStdString(GradeList[i]);
 				GradeComboBox->addItem(Item, Item);
@@ -175,10 +174,11 @@ void Search::ClickAlterButton(){
 		this->OutButton->setText("取消");
 
 		this->ShowTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
-		for (int i = 0; i < 5; i++) {
-			dataModel->setItem(RowCount+i, 0, new QStandardItem(QString::fromStdString("")));
-			dataModel->setItem(RowCount+i, 1, new QStandardItem(QString::fromStdString("")));
-			dataModel->setItem(RowCount+i, 2, new QStandardItem(QString::fromStdString("")));
+		for (int i = 0; i < 8; i++) {
+			RowCount++;
+			dataModel->setItem(RowCount, 0, new QStandardItem(QString::fromStdString("")));
+			dataModel->setItem(RowCount, 1, new QStandardItem(QString::fromStdString("")));
+			dataModel->setItem(RowCount, 2, new QStandardItem(QString::fromStdString("")));
 		}
 	}
 	else
@@ -213,18 +213,19 @@ void Search::ClickAlterButton(){
 		string gradeNum = GradeComboBox->currentText().toStdString();
 		string stuNum = NumComboBox->currentText().toStdString();
 		
-		LabAlter->setText(NumComboBox->currentText());
-
 		//处理数据库，修改学分细则
+		bool AlterSuccee;
 		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {
-			LabAlter->setText("学分细则修改成功");
+			AlterSuccee = true;
 		}
 		else
 		{
-			LabAlter->setText("学分细则修改失败，请检查输入");
+			AlterSuccee = false;
 		}
-		
-		NumComboBoxChanged();//刷新学分细则表
+		AlterDetailUI* AU = new AlterDetailUI(AlterSuccee);
+		connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
+		AU->setWindowModality(Qt::ApplicationModal);
+		AU->show();
 	}
 }
 
@@ -254,8 +255,8 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 //从添加、删除界面返回后的操作逻辑
 void Search::ReShowWin() {
 
-	//刷新一下当前界面
-	GradeComboBoxChanged();
+	this->ShowTable->setEditTriggers(QAbstractItemView::NoEditTriggers);//设置细节表格不可修改
+	GradeComboBoxChanged();//刷新一下当前界面
 	NumComboBoxChanged();
 }
 
