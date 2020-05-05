@@ -175,6 +175,12 @@ void AddInformation::ClickSureButton() {
 	this->SureButton->hide();	//这个函数好像没被调用
 }
 
+
+void AddInformation::closeEvent(QCloseEvent* event) {
+	emit sendsignal();
+}
+
+
 bool AddConnectDatabase() {
 	//初始化mysql  
 	mysql_init(AddMysql);

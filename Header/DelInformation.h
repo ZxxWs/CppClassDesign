@@ -29,7 +29,14 @@ public slots:
 	void ClickCancelButton();
 	void GradeComboBoxChanged();
 	void StuComboBoxChanged();
+
+signals:
+	void sendsignal();//这个函数用户向主界面通知关闭的消息
+
 private:
 	Ui::DelInformation ui;
+
+protected:
+	void closeEvent(QCloseEvent* event);//关闭界面的逻辑，主要是给上个界面来传递参数
 
 };

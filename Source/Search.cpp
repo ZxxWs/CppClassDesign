@@ -6,6 +6,7 @@
 #include "../Header/Search.h"
 #include "../Header/Student.h"
 #include "../Header/AddInformation.h"
+#include "../Header/DelInformation.h"
 #include <QtWidgets/QMainWindow>
 #include<iostream>
 #include<Windows.h>
@@ -144,12 +145,20 @@ void Search::NumComboBoxChanged()//学号号列表发生改变
 //添加按钮事件处理
 void Search::ClickAddButton() {//点击“添加”按钮后，打开添加信息界面
 
-	AddInformation *a=new AddInformation();
-	a->show();
+	AddInformation *addWin=new AddInformation(this);
+	connect(addWin, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
+	addWin->setWindowModality(Qt::ApplicationModal);
+	addWin->show();
 }
 
 //删除按钮事件处理
-void Search::ClickDelButton(){}
+void Search::ClickDelButton(){
+
+	DelInformation* delWin = new DelInformation(this);
+	connect(delWin, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
+	delWin->setWindowModality(Qt::ApplicationModal);
+	delWin->show();
+}
 
 //修改按钮事件处理
 void Search::ClickAlterButton(){
@@ -242,6 +251,13 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 
 }
 
+//从添加、删除界面返回后的操作逻辑
+void Search::ReShowWin() {
+
+	//刷新一下当前界面
+	GradeComboBoxChanged();
+	NumComboBoxChanged();
+}
 
 //连接数据库函数
 bool ConnectDatabase() {

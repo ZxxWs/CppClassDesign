@@ -195,6 +195,12 @@ void DelInformation::StuComboBoxChanged() {
 	//this->TagLabel->setText("");
 }
 
+
+void DelInformation::closeEvent(QCloseEvent* event) {
+	emit sendsignal();
+}
+
+
 bool DelConnectDatabase() {
 	//≥ı ºªØmysql  
 	mysql_init(DelMysql);
