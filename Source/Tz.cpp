@@ -50,37 +50,58 @@ Tz::Tz(QWidget *parent)
 	this->NewPassLineEdit->setClearButtonEnabled(true);//在输入框中设置一个清空按钮
 	this->SurePassLineEdit->setClearButtonEnabled(true);//在输入框中设置一个清空按钮
 
+	LogInButton->setStyleSheet("background:green");//设置按钮的背景颜色为绿色
+	AlterPassButton->setStyleSheet("background: rgb(207, 207, 207)");
 }
 
 void Tz::ClickLogInButton() {//密码确认按钮点击事件的实现
 
-	TagLabel->setText("");
-	PassLabel->setText("输入密码");
-	NewPassLabel->hide();
-	NewPassLineEdit->hide();
-	SurePassLabel->hide();
-	SurePassLineEdit->hide();
-	string pass = PassLineEdit->displayText().toStdString();
 
-	if (LogInConnectDatabase()){
-		if (FindPass(pass)) {//用输入的密码来查找密码是否存在
+	if (IsAlterTag) {//作为取消按钮使用
 
-			TagLabel->setText("");
-			PassLineEdit->setText("");
-			
-			this->hide();
+		IsAlterTag = false;
+		TagLabel->clear();
+		PassLabel->setText("输入密码：");
+		AlterPassButton->setText("修改密码");
+		NewPassLabel->hide();
+		NewPassLineEdit->hide();
+		SurePassLabel->hide();
+		SurePassLineEdit->hide();
+		LogInButton->show();
+		PassLineEdit->clear();
+		NewPassLineEdit->clear();
+		SurePassLineEdit->clear();
+		LogInButton->setStyleSheet("background:green");//设置按钮的背景颜色为绿色
+		AlterPassButton->setStyleSheet("background: rgb(207, 207, 207)");
+		LogInButton->setText("输入密码");
+		AlterPassButton->setText("修改密码");
+	}
+	else//作为登陆按钮使用
+	{
+		TagLabel->setText("");
+		PassLabel->setText("输入密码");
+		NewPassLabel->hide();
+		NewPassLineEdit->hide();
+		SurePassLabel->hide();
+		SurePassLineEdit->hide();
+		string pass = PassLineEdit->displayText().toStdString();
 
-			//界面跳转函数
-			Search *searchWin = new Search(this);
-			connect(searchWin, SIGNAL(sendsignal()), this, SLOT(ReShowThis()));//当点击子界面OutButton，调用主界面的reshow()函数
-			searchWin->show();
+		if (LogInConnectDatabase()) {
+			if (FindPass(pass)) {//用输入的密码来查找密码是否存在
+
+				TagLabel->setText("");
+				PassLineEdit->clear();
+				this->hide();
+				//界面跳转函数
+				Search* searchWin = new Search(this);
+				connect(searchWin, SIGNAL(sendsignal()), this, SLOT(ReShowThis()));//当点击子界面OutButton，调用主界面的reshow()函数
+				searchWin->show();
+			}
+			else
+			{
+				TagLabel->setText("密码输入错误");
+			}
 		}
-		else
-		{
-
-			TagLabel->setText("密码输入错误");
-		}
-	
 	}
 }
 
@@ -104,6 +125,7 @@ void Tz::ClickAlterPassButton() {
 						TagLabel->setText("密码修改成功");
 						PassLabel->setText("输入密码：");
 						AlterPassButton->setText("修改密码");
+						LogInButton->setText("登陆");
 						NewPassLabel->hide();
 						NewPassLineEdit->hide();
 						SurePassLabel->hide();
@@ -112,6 +134,8 @@ void Tz::ClickAlterPassButton() {
 						PassLineEdit->clear();
 						NewPassLineEdit->clear();
 						SurePassLineEdit->clear();
+						LogInButton->setStyleSheet("background:green");//设置按钮的背景颜色为绿色
+						AlterPassButton->setStyleSheet("background: rgb(207, 207, 207)");
 					}
 					else//执行修改密码函数失败
 					{
@@ -148,10 +172,13 @@ void Tz::ClickAlterPassButton() {
 		NewPassLineEdit->show();
 		SurePassLabel->show();
 		SurePassLineEdit->show();
-		LogInButton->hide();
 		TagLabel->setText("");
 		PassLabel->setText("输入旧密码：");
 		AlterPassButton->setText("确认修改");
+		LogInButton->setText("取消修改");
+		LogInButton->setStyleSheet("background: rgb(207, 207, 207)");//设置按钮的背景颜色为白色
+		AlterPassButton->setStyleSheet("background:green");
+		PassLineEdit->clear();
 	}
 
 }

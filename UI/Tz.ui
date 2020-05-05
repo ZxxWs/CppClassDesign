@@ -67,6 +67,9 @@
       <pointsize>18</pointsize>
      </font>
     </property>
+    <property name="maxLength">
+     <number>20</number>
+    </property>
    </widget>
    <widget class="QPushButton" name="AlterPassButton">
     <property name="geometry">
@@ -121,6 +124,9 @@
       <pointsize>18</pointsize>
      </font>
     </property>
+    <property name="maxLength">
+     <number>20</number>
+    </property>
    </widget>
    <widget class="QLineEdit" name="SurePassLineEdit">
     <property name="geometry">
@@ -135,6 +141,9 @@
      <font>
       <pointsize>18</pointsize>
      </font>
+    </property>
+    <property name="maxLength">
+     <number>20</number>
     </property>
    </widget>
    <widget class="QLabel" name="PassLabel">
