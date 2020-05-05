@@ -17,11 +17,12 @@ bool IsAlterTag = false;//标志现在是否在改密码
 MYSQL* LogInMysql = new MYSQL; //mysql连接  
 MYSQL_RES* LogInRes; //这个结构代表返回行的一个查询结果集  
 MYSQL_ROW LogInColumn; //一个行数据的类型安全(type-safe)的表示，表示数据行的列  
-char LogInQuery[5000]; //查询语句
+char LogInQuery[100]; //查询语句
 
 bool LogInConnectDatabase();
 bool  FindPass(string pass);//通过输入的密码来查找密码。
 bool AlterPassFun(string oldPass, string newPass);
+
 
 Tz::Tz(QWidget *parent)
 	: QMainWindow(parent)
@@ -51,7 +52,6 @@ Tz::Tz(QWidget *parent)
 
 }
 
-
 void Tz::ClickLogInButton() {//密码确认按钮点击事件的实现
 
 	TagLabel->setText("");
@@ -63,9 +63,17 @@ void Tz::ClickLogInButton() {//密码确认按钮点击事件的实现
 	string pass = PassLineEdit->displayText().toStdString();
 
 	if (LogInConnectDatabase()){
-		if (FindPass(pass)) {
+		if (FindPass(pass)) {//用输入的密码来查找密码是否存在
 
-			//TagLabel->setText("密码对了");
+			TagLabel->setText("");
+			PassLineEdit->setText("");
+			
+			this->hide();
+
+			//界面跳转函数
+			Search *searchWin = new Search(this);
+			connect(searchWin, SIGNAL(sendsignal()), this, SLOT(ReShowThis()));//当点击子界面OutButton，调用主界面的reshow()函数
+			searchWin->show();
 		}
 		else
 		{
@@ -76,6 +84,7 @@ void Tz::ClickLogInButton() {//密码确认按钮点击事件的实现
 	}
 }
 
+//修改密码按钮点击处理
 void Tz::ClickAlterPassButton() {
 
 	//第二次点击修改按钮后的处理逻辑
@@ -94,6 +103,7 @@ void Tz::ClickAlterPassButton() {
 						IsAlterTag = false;
 						TagLabel->setText("密码修改成功");
 						PassLabel->setText("输入密码：");
+						AlterPassButton->setText("修改密码");
 						NewPassLabel->hide();
 						NewPassLineEdit->hide();
 						SurePassLabel->hide();
@@ -141,11 +151,14 @@ void Tz::ClickAlterPassButton() {
 		LogInButton->hide();
 		TagLabel->setText("");
 		PassLabel->setText("输入旧密码：");
-
+		AlterPassButton->setText("确认修改");
 	}
 
 }
 
+void Tz::ReShowThis(){//跳回到本界面
+	this->show();
+}
 
 //连接数据库函数
 bool LogInConnectDatabase() {
@@ -163,7 +176,7 @@ bool LogInConnectDatabase() {
 	return true;
 }
 
-
+//使用输入的密码来查询密码是否存在
 bool  FindPass(string pass) {
 
 	string str = "select * from userpass where pass='"+pass+"'";
@@ -187,10 +200,18 @@ bool  FindPass(string pass) {
 	return false;
 }
 
-
+//操作数据库修改密码函数
 bool AlterPassFun(string oldPass,string newPass) {
-	return true;
+
+	string str = "update userpass set pass="+newPass+" where pass="+oldPass;
+	sprintf_s(LogInQuery, &str[0]); //查询语句
+	mysql_query(LogInMysql, "set names utf8");
+	if (mysql_query(LogInMysql, LogInQuery))    //执行SQL语句
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
-
-
-

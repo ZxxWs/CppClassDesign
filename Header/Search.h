@@ -9,7 +9,7 @@ class Search : public QMainWindow
 
 public:
 	Search(QWidget* parent = Q_NULLPTR);
-
+	//~Search();
 	QComboBox* GradeComboBox = new QComboBox;
 	QComboBox* NumComboBox = new QComboBox;
 	QLabel* LabNum = new QLabel;
@@ -31,6 +31,9 @@ public slots:
 	void ClickDelButton();//添加按钮点击函数的声明
 	void ClickAlterButton();//添加按钮点击函数的声明
 	void ClickOutButton();//添加按钮点击函数的声明
+
+signals:
+	void sendsignal();//这个函数用户向主界面通知关闭的消息
 
 private:
 	Ui::Search ui;

@@ -23,6 +23,7 @@ public:
 public slots:
 	void ClickLogInButton();//按钮点击事件
 	void ClickAlterPassButton();//按钮点击事件
+	void ReShowThis();
 
 private:
 	Ui::TzClass ui;

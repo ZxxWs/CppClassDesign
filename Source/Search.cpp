@@ -39,6 +39,7 @@ bool InitStudent(string GradeNum, string StudentNum);
 bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
 string ToString(double d, int i);
 
+
 Search::Search(QWidget* parent)//查询界面的构造函数
 	: QMainWindow(parent)
 {
@@ -49,7 +50,6 @@ Search::Search(QWidget* parent)//查询界面的构造函数
 	connect(ui.DelButton, SIGNAL(clicked()), this, SLOT(ClickDelButton()));
 	connect(ui.AlterButton, SIGNAL(clicked()), this, SLOT(ClickAlterButton()));
 	connect(ui.OutButton, SIGNAL(clicked()), this, SLOT(ClickOutButton()));
-	//setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint);//将Search窗口放到Tz窗口中（绑定）
 
 	//界面控件的绑定
 	this->GradeComboBox = ui.GradeComboBox;
@@ -236,13 +236,12 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 	}
 	else//当学分细则没在修改状态，作为退出按钮使用
 	{
-
-
-
-
+		emit sendsignal();
+		this->close();
 	}
 
 }
+
 
 //连接数据库函数
 bool ConnectDatabase() {
