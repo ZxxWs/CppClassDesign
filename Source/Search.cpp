@@ -40,7 +40,7 @@ bool InitNum(string GradeNum);
 bool InitStudent(string GradeNum, string StudentNum);
 bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore);
 string ToString(double d, int i);
-
+int CheckInPut(string event, string time, string score);
 
 Search::Search(QWidget* parent)//查询界面的构造函数
 	: QMainWindow(parent)
@@ -196,7 +196,7 @@ void Search::ClickAlterButton(){
 		string AllDetail = "";
 		double AllScore = 0;
 		string event, time, score;
-		//这里需要设置输入检测。主要检测分数。两种方法1.输入限制。2.代码异常检测
+
 		for (int i = 0; i <= RowCount; i++) {
 			event=dataModel->data(dataModel->index(i,0)).toString().toStdString();
 			time = dataModel->data(dataModel->index(i, 1)).toString().toStdString();
@@ -204,6 +204,16 @@ void Search::ClickAlterButton(){
 			//检测输入内容由没有空的
 			if ((event=="" || time=="")|| score=="") {//如果有空是空的,直接跳过。
 				continue;
+			}
+
+			//进行输入异常检测:
+			int checkTag = CheckInPut(event, time, score);
+			if (checkTag!=0) {
+				AlterDetailUI* AU = new AlterDetailUI(checkTag);
+				connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
+				AU->setWindowModality(Qt::ApplicationModal);
+				AU->show();
+				return;
 			}
 			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%%";//这里设置两个%是为了防止转义
 			AllScore += atof(&score[0]);
@@ -214,13 +224,13 @@ void Search::ClickAlterButton(){
 		string stuNum = NumComboBox->currentText().toStdString();
 		
 		//处理数据库，修改学分细则
-		bool AlterSuccee;
+		int AlterSuccee;
 		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {
-			AlterSuccee = true;
+			AlterSuccee = 0;
 		}
 		else
 		{
-			AlterSuccee = false;
+			AlterSuccee = 1;
 		}
 		AlterDetailUI* AU = new AlterDetailUI(AlterSuccee);
 		connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
@@ -393,4 +403,38 @@ string ToString(double d, int i) {
 	int tag = str.find(".");
 	return str.substr(0, tag + 1 + i);
 }
+
+//用于检测输入的数据是否合规。
+//返回0：合格，11：输入有#或者%，12：时间格式有问题，13：分数格式有问题（12未用）
+int CheckInPut(string event,string time,string score) {
+	
+	if ((event.find("#") == event.npos) == 0|| (event.find("%%") == event.npos) == 0) {//检测出输入有#或者%
+		return 11;
+	}
+
+	if ((time.find("#") == time.npos) == 0 || (time.find("%%") == time.npos) == 0) {//检测出输入有#或者%
+		return 11;
+	}
+
+	int DotCount = 0;
+	for (int i = 0; i < score.length(); i++) {
+		char strScore = score[i];
+		if (strScore >= '0' && strScore <= '9') {
+			continue;
+		}
+		else if(strScore == '.')
+		{
+			DotCount += 1;
+			if(DotCount==2){
+				return 13;
+			}
+		}
+		else
+		{
+			return 13;
+		}
+	}
+	return 0;
+}
+
 

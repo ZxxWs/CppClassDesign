@@ -9,7 +9,7 @@ class AlterDetailUI : public QMainWindow
 	Q_OBJECT
 
 public:
-	AlterDetailUI(bool tag,QWidget* parent = Q_NULLPTR);
+	AlterDetailUI(int tag,QWidget* parent = Q_NULLPTR);//这个参数用于上个界面传参
 	QPushButton* BackButton;
 	QLabel* ShowLabel;
 
