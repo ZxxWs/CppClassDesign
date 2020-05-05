@@ -10,11 +10,19 @@ class Tz : public QMainWindow
 
 public:
 	Tz(QWidget *parent = Q_NULLPTR);
-	QPushButton* Sub = new QPushButton;	//输入密码后的确认按钮声明
-	QLabel* Lab = new QLabel;
+	QLabel* PassLabel;
+	QLabel* NewPassLabel;
+	QLabel* SurePassLabel;
+	QLabel* TagLabel;//用于输出提示信息
+	QLineEdit* PassLineEdit;
+	QLineEdit* NewPassLineEdit;
+	QLineEdit* SurePassLineEdit;
+	QPushButton* AlterPassButton;
+	QPushButton* LogInButton;	//输入密码后的确认按钮声明
 
 public slots:
-	void ClickButton();//按钮点击事件
+	void ClickLogInButton();//按钮点击事件
+	void ClickAlterPassButton();//按钮点击事件
 
 private:
 	Ui::TzClass ui;

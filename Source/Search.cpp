@@ -166,9 +166,11 @@ void Search::ClickAlterButton(){
 		this->OutButton->setText("È¡Ïû");
 
 		this->ShowTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
-		dataModel->setItem(RowCount, 0, new QStandardItem(QString::fromStdString("")));
-		dataModel->setItem(RowCount, 1, new QStandardItem(QString::fromStdString("")));
-		dataModel->setItem(RowCount, 2, new QStandardItem(QString::fromStdString("")));
+		for (int i = 0; i < 5; i++) {
+			dataModel->setItem(RowCount+i, 0, new QStandardItem(QString::fromStdString("")));
+			dataModel->setItem(RowCount+i, 1, new QStandardItem(QString::fromStdString("")));
+			dataModel->setItem(RowCount+i, 2, new QStandardItem(QString::fromStdString("")));
+		}
 	}
 	else
 	{
