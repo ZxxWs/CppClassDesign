@@ -173,8 +173,8 @@ void Search::ClickAlterButton(){
 		this->OutButton->setStyleSheet("background: green");
 		this->OutButton->setText("取消");
 
-		this->ShowTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
-		for (int i = 0; i < 8; i++) {
+		this->ShowTable->setEditTriggers(QAbstractItemView::AllEditTriggers);//表格设置为可编辑状态
+		for (int i = 0; i < 8; i++) {//为表格增加9行空行
 			RowCount++;
 			dataModel->setItem(RowCount, 0, new QStandardItem(QString::fromStdString("")));
 			dataModel->setItem(RowCount, 1, new QStandardItem(QString::fromStdString("")));
@@ -197,7 +197,9 @@ void Search::ClickAlterButton(){
 		double AllScore = 0;
 		string event, time, score;
 
-		for (int i = 0; i <= RowCount; i++) {
+		for (int i = 0; i <= RowCount; i++) {//循环读取表格内容
+
+			//读取每个位置的内容
 			event=dataModel->data(dataModel->index(i,0)).toString().toStdString();
 			time = dataModel->data(dataModel->index(i, 1)).toString().toStdString();
 			score = dataModel->data(dataModel->index(i, 2)).toString().toStdString();
@@ -206,17 +208,8 @@ void Search::ClickAlterButton(){
 				continue;
 			}
 
-			//进行输入异常检测:
-			int checkTag = CheckInPut(event, time, score);
-			if (checkTag!=0) {
-				AlterDetailUI* AU = new AlterDetailUI(checkTag);
-				connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
-				AU->setWindowModality(Qt::ApplicationModal);
-				AU->show();
-				return;
-			}
 			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%%";//这里设置两个%是为了防止转义
-			AllScore += atof(&score[0]);
+			AllScore += atof(&score[0]);//将string转为浮点类型
 		}
 
 		//获取当前班号和学号
@@ -225,22 +218,22 @@ void Search::ClickAlterButton(){
 		
 		//处理数据库，修改学分细则
 		int AlterSuccee;
-		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {
+		if (AlterDetaile(gradeNum, stuNum, AllDetail, AllScore)) {//执行细则修改函数
 			AlterSuccee = 0;
 		}
 		else
 		{
 			AlterSuccee = 1;
 		}
-		AlterDetailUI* AU = new AlterDetailUI(AlterSuccee);
-		connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用
-		AU->setWindowModality(Qt::ApplicationModal);
-		AU->show();
+		AlterDetailUI* AlterWin = new AlterDetailUI(AlterSuccee,this);//new一个提示界面，第一个参数是传给下一界面的数据，第二个参数是指在当前界面上启动
+		connect(AlterWin, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当子界面传回信息后，调用ReShowWin
+		AlterWin->setWindowModality(Qt::ApplicationModal);//将子界面设置为最上层
+		AlterWin->show();
 	}
 }
 
 //退出按钮事件处理
-void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
+void Search::ClickOutButton() {
 
 	if (AlterTag == 1) {//当学分细则正在修改的时候（作为取消按钮使用）
 		AlterTag = 0;
@@ -266,6 +259,7 @@ void Search::ClickOutButton() {//点击“添加”按钮后，打开添加信息界面
 void Search::ReShowWin() {
 
 	this->ShowTable->setEditTriggers(QAbstractItemView::NoEditTriggers);//设置细节表格不可修改
+
 	GradeComboBoxChanged();//刷新一下当前界面
 	NumComboBoxChanged();
 }
@@ -380,11 +374,9 @@ bool InitStudent(string GradeNum,string StudentNum) {
 //修改学生学分细则
 bool AlterDetaile(string gradeNum, string stuNum, string AllDetail, double AllScore) {
 
-	//UPDATE table_name SET field1 = new - value1, field2 = new - value2
-		//[WHERE Clause]
-
+	
 	string str = "update grade"+gradeNum+" set Sscore="+ToString(AllScore,1)+",Sdetail='"+AllDetail+"' where Snum="+stuNum;
-	//string str = "update grade" + gradeNum + " set Sscore=" + ToString(AllScore, 1) + " where Snum=" + stuNum;
+
 	sprintf_s(query, &str[0]); //查询语句
 	mysql_query(mysql, "set names utf8");
 	if (mysql_query(mysql, query))    //执行SQL语句
@@ -403,38 +395,3 @@ string ToString(double d, int i) {
 	int tag = str.find(".");
 	return str.substr(0, tag + 1 + i);
 }
-
-//用于检测输入的数据是否合规。
-//返回0：合格，11：输入有#或者%，12：时间格式有问题，13：分数格式有问题（12未用）
-int CheckInPut(string event,string time,string score) {
-	
-	if ((event.find("#") == event.npos) == 0|| (event.find("%%") == event.npos) == 0) {//检测出输入有#或者%
-		return 11;
-	}
-
-	if ((time.find("#") == time.npos) == 0 || (time.find("%%") == time.npos) == 0) {//检测出输入有#或者%
-		return 11;
-	}
-
-	int DotCount = 0;
-	for (int i = 0; i < score.length(); i++) {
-		char strScore = score[i];
-		if (strScore >= '0' && strScore <= '9') {
-			continue;
-		}
-		else if(strScore == '.')
-		{
-			DotCount += 1;
-			if(DotCount==2){
-				return 13;
-			}
-		}
-		else
-		{
-			return 13;
-		}
-	}
-	return 0;
-}
-
-

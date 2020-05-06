@@ -113,6 +113,7 @@ void Tz::ClickAlterPassButton() {
 
 		TagLabel->setText("");
 		string oldPass, newPass, surePass;
+		//获取输入框的内容
 		oldPass = PassLineEdit->displayText().toStdString();
 		newPass = NewPassLineEdit->displayText().toStdString();
 		surePass = SurePassLineEdit->displayText().toStdString();
@@ -200,7 +201,6 @@ bool LogInConnectDatabase() {
 	{
 		return true;
 	}
-	return true;
 }
 
 //使用输入的密码来查询密码是否存在
@@ -218,13 +218,12 @@ bool  FindPass(string pass) {
 	{
 		return false;
 	}
-	
 	for (int i = 0; LogInColumn = mysql_fetch_row(LogInRes); i++) {
 		if (pass == LogInColumn[0]) {
 			return true;
 		}
 	}
-	return false;
+	return true;
 }
 
 //操作数据库修改密码函数
