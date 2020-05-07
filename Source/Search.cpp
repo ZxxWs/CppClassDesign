@@ -208,6 +208,16 @@ void Search::ClickAlterButton(){
 				continue;
 			}
 
+			//进行输入异常检测:	
+			int checkTag = CheckInPut(event, time, score);
+			if (checkTag != 0) {
+				AlterDetailUI* AU = new AlterDetailUI(checkTag);
+				connect(AU, SIGNAL(sendsignal()), this, SLOT(ReShowWin()));//当点击子界面OutButton，调用	
+				AU->setWindowModality(Qt::ApplicationModal);
+				AU->show();
+				return;
+			}
+
 			AllDetail = AllDetail + "#" + event + "#" + time + "#" + score + "%%";//这里设置两个%是为了防止转义
 			AllScore += atof(&score[0]);//将string转为浮点类型
 		}
@@ -395,3 +405,39 @@ string ToString(double d, int i) {
 	int tag = str.find(".");
 	return str.substr(0, tag + 1 + i);
 }
+
+
+//用于检测输入的数据是否合规。	
+//返回0：合格，11：输入有#或者%，12：时间格式有问题，13：分数格式有问题（12未用）	
+int CheckInPut(string event, string time, string score) {
+
+	if ((event.find("#") == event.npos) == 0 || (event.find("%%") == event.npos) == 0) {//检测出输入有#或者%
+		return 11;
+	}
+
+	if ((time.find("#") == time.npos) == 0 || (time.find("%%") == time.npos) == 0) {//检测出输入有#或者%	
+		return 11;
+	}
+
+	int DotCount = 0;
+	for (int i = 0; i < score.length(); i++) {
+		char strScore = score[i];
+		if (strScore >= '0' && strScore <= '9') {
+			continue;
+		}
+		else if (strScore == '.')
+		{
+			DotCount += 1;
+			if (DotCount == 2) {
+				return 13;
+			}
+		}
+		else
+		{
+			return 13;
+		}
+	}
+	return 0;
+}
+
+

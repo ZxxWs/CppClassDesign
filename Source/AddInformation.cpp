@@ -53,13 +53,13 @@ AddInformation::AddInformation(QWidget* parent)//添加信息界面的构造函数
 	//初始化的时候，控件都隐藏
 	this->GradeListLable -> hide();
 	this->NameLable -> hide();
-	this->NumLabel ->hide();
 	this->RemarkLable -> hide();
 	this->GradeComboBox -> hide();
 	this->RemarkTextEdit -> hide();
-	this->NumLineEdit -> hide();
+	//this->NumLineEdit -> hide();
 	this->NameLineEdit -> hide();
-	this->SureButton->hide();
+	//this->SureButton->hide();
+	this->NumLabel->setText("输入班号");
 	this->NumLineEdit->setClearButtonEnabled(true);//在输入框中设置一个清空按钮
 	this->NameLineEdit->setClearButtonEnabled(true);
 	this->AddGradeButton->setStyleSheet("background:green");
