@@ -8,17 +8,12 @@
 
 
 
-运行方法： 
- 1.先将项目git拉取到本地 
- 
- 2.将项目的qt环境改为运行电脑的环境。
- 
- 3.将项目设置为Debug x64 
- 
- 4.确保项目属性中数据库连接相关设置正确。 
- 
- 5.将[/DataBase](/DataBase)文件夹下的xfgl.sql文件填充到数据库中。
- 
+运行方法：   
+ >1.先将项目git拉取到本地    
+ 2.将项目的qt环境改为运行电脑的环境。    
+ 3.将项目设置为Debug x64     
+ 4.确保项目属性中数据库连接相关设置正确。     
+ 5.将[/DataBase](/DataBase)文件夹下的xfgl.sql文件填充到数据库中。    
  6.（非必要）如果你的数据库密码为“123456”则不需要此步操作。否则，将[/Source](/Source)文件夹下的"Tz.cpp"、"Search.cpp"、"DelInformation.cpp"、"AddInformation.cpp"这四个文件中的关于数据库连接密码进行修改。 
 
 
